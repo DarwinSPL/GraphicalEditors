@@ -1,0 +1,17 @@
+
+// Background color of the control itself
+.combo-box {
+  -fx-background-color: #63b4cf;
+  //-fx-mark-color: orange; // arrow color
+}
+
+.combo-box-base {
+  -fx-background-color: #63b4cf;
+  //-fx-mark-color: orange; // arrow color
+}
+
+// Selected item text color on the control itself
+.combo-box-base > .label { -fx-text-fill: white;
+-fx-font-size:xx-small;
+
+}

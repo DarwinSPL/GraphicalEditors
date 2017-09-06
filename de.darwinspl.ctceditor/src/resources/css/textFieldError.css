@@ -1,0 +1,5 @@
+.text-field: {
+-fx-text-box-border: ed ;
+-fx-focus-color: red ;
+ -fx-text-fill: red;
+}
