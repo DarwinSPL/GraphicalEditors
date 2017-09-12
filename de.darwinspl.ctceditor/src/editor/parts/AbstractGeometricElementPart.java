@@ -11,6 +11,7 @@
  *******************************************************************************/
 package editor.parts;
 
+import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.mvc.fx.parts.AbstractContentPart;
 
 import editor.model.AbstractGeometricElement;
@@ -40,6 +41,7 @@ public abstract class AbstractGeometricElementPart<N extends Node> extends Abstr
 		contentProperty().removeListener(contentObserver);
 		super.doDeactivate();
 	}
+	
 
 	@Override
 	protected void doRefreshVisual(N visual) {

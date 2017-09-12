@@ -141,7 +141,6 @@ public class TextPart extends AbstractNodePart<Text> {
 	@Override
 	public void doAttachToAnchorageVisual(IVisualPart<? extends Node> anchorage, String role) {
 
-		ObservableMultiset<IVisualPart<? extends Node>> allAn = anchorage.getAnchoredsUnmodifiable();
 
 		double distanceX = 0;
 		double distanceY = 0;
@@ -192,6 +191,27 @@ public class TextPart extends AbstractNodePart<Text> {
 					getVisual().toFront();
 					refreshVisual();
 
+				
+			} else if(getContent().getTextType().equals(TextType.AND_OR_CONTROL)){
+				
+				    
+				double nX = b11.getMinX() + 15;
+				double nY = b11.getMinY() + 65;
+				
+				
+//				double hight = ((ControlBlockPart) anchorage).getContent().getGeometry().getBounds().getHeight();
+//				hight2;
+				
+
+				distanceX = nX - b22.getMinX();
+				distanceY = nY - b22.getMinY();
+
+				getContent().getTransform().translate(nX - b22.getMinX(), nY - b22.getMinY());
+
+		
+				getVisual().toFront();
+				refreshVisual();
+				
 				
 			}
 			

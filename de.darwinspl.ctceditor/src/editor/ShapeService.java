@@ -18,9 +18,11 @@ import editor.model.CreateNewContextButton;
 import editor.model.choiceboxes.ChoiceBoxFeatureModel;
 import editor.model.choiceboxes.ChoiceBoxModel;
 import editor.model.choiceboxes.ChoiceBoxModel.ChoiceBoxType;
-import editor.model.control.ControlBlockModel.ControlValidateOperatorBlockType;
+import editor.model.control.ControlAndOrBlock;
 import editor.model.control.ControlIfBlockModel;
+import editor.model.control.ControlAndOrBlock.ControlAndORType;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
+import editor.model.control.ControlValidateOperatorBlockModel.ControlValidateOperatorBlockType;
 import editor.model.nodes.TextModel;
 import editor.model.nodes.TextModel.TextType;
 import editor.model.operator.OperatorFeatureIsSelectedModel;
@@ -67,6 +69,7 @@ public class ShapeService {
 				ControlShapeService.createControlValidateOperatorBlockGroup(ControlValidateOperatorBlockType.VALIDATE));
 
 
+		paletteContents.addAll(createControlAndOrBlock());
 		return paletteContents;
 
 	}
@@ -97,6 +100,22 @@ public class ShapeService {
 		return blockElements;
 	}
 	
+	public static List<Object> createControlAndOrBlock() {
+		List<Object> blockElements = new ArrayList<>();
+
+		// Create Model for block elements
+		final ControlAndOrBlock controlBlock = new ControlAndOrBlock(ControlShapeService.createCustomControlAndOrBlockShape(),
+				new AffineTransform(1, 0, 0, 1, 23, 5), Color.YELLOW, null, ControlAndORType.AND);
+	
+		final TextModel textModel = new TextModel("AND", new AffineTransform(1, 0, 0, 1, 30, 10), TextType.AND_OR_CONTROL);
+
+		// Add Parent to child block elements
+		textModel.setParentBlock(controlBlock);
+
+		blockElements.add(controlBlock);
+		blockElements.add(textModel);
+		return blockElements;
+	}
 	
 
 
@@ -353,18 +372,6 @@ public class ShapeService {
 		paletteContents.add(operatorBlockModel);
 		return paletteContents;
 	}
-
-	// 15, 20, 30, 0, 45, 20,
-	public static IShape createEvolutionShape() {
-		List<BezierCurve> segments = new ArrayList<>();
-		segments.addAll(Arrays.asList(
-				PolyBezier.interpolateCubic(0, 60, 10, 37, 30, 20, 50, 10, 100, 0, 150, 10, 170, 20, 190, 37, 200, 60)
-						.toBezier()));
-		segments.add(new Line(200, 60, 0, 60));
-		return new CurvedPolygon(segments);
-	}
-
-
 
 
 

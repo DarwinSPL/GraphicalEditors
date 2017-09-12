@@ -12,10 +12,10 @@ import editor.model.AbstractBlockElement;
 import editor.model.choiceboxes.ChoiceBoxFeatureModel;
 import editor.model.choiceboxes.ChoiceBoxModel;
 import editor.model.choiceboxes.ChoiceBoxModel.ChoiceBoxType;
-import editor.model.control.ControlBlockModel.ControlValidateOperatorBlockType;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;
+import editor.model.control.ControlValidateOperatorBlockModel.ControlValidateOperatorBlockType;
 import editor.model.nodes.TextModel;
 import editor.model.nodes.TextModel.TextType;
 import editor.model.operator.OperatorFixedBlockModel;
@@ -40,6 +40,95 @@ public class ControlShapeService {
 		segments.add(new Line(200, 0, 0, 0));
 		return new CurvedPolygon(segments);
 	}
+	
+	public static CurvedPolygon createCustomControlAndOrBlockShape(){
+		return createControlAndOrBlockShape(150, 60, 10, 45, 50, 30);
+		
+	}
+	
+	/**
+	 * Method for adjusting the shape of a ControlAndOrBlock according to an added first operand
+	 * 
+	 * 
+	 * @param currentShape current shape of he controlAndOrBlock
+	 * @param newHight Hight of the added operand
+	 * @return the new shape
+	 */
+	public static CurvedPolygon adjustControlAndOrBlockShapeOperand1(CurvedPolygon currentShape, double newHight ){
+		BezierCurve[] bezier = currentShape.getOutlineSegments();
+		newHight = newHight +2;
+		double currentHight = bezier[8].getY1() - bezier[8].getY2();
+		double difference = newHight - currentHight;
+		bezier[0] = new Line(0, bezier[0].getY1()-difference, bezier[0].getX2(), bezier[0].getY2());
+		double startY = bezier[7].getY2();
+		double startX = bezier[7].getX2();
+		bezier[8] = new Line(startX, startY, startX, startY - newHight);
+		bezier[9] = new Line(startX, startY - newHight, bezier[10].getX2(), startY-newHight);
+		bezier[10] = new Line(bezier[10].getX2(), startY-newHight, bezier[10].getX2(), bezier[10].getY2()- difference);
+		bezier[11] = new Line(bezier[10].getX2(), bezier[10].getY2(), 0, bezier[10].getY2());
+		return new CurvedPolygon(bezier);
+	
+	}
+	
+	/**
+	 * Method for adjusting the shape of a ControlAndOrBlock according to an added first operand
+	 * 
+	 * 
+	 * @param currentShape current shape of he controlAndOrBlock
+	 * @param newHight Hight of the added operand
+	 * @return the new shape
+	 */
+	public static CurvedPolygon adjustControlAndOrBlockShapeOperand2(CurvedPolygon currentShape, double newHight ){
+		BezierCurve[] bezier = currentShape.getOutlineSegments();
+		newHight = newHight +2;
+		double currentHight = bezier[8].getY1() - bezier[8].getY2();
+		double difference = newHight - currentHight;
+		
+		bezier[0] = new Line(bezier[0].getX1(), bezier[0].getY1(), bezier[0].getX2(), bezier[0].getY2()+ difference);
+		bezier[1] = new Line(bezier[1].getX1(), bezier[0].getY2(), bezier[1].getX2(), bezier[0].getY2());
+		bezier[2] = new Line(bezier[1].getX2(), bezier[1].getY2(), bezier[2].getX2(), bezier[2].getY2() + difference);
+		bezier[3] = new Line(bezier[2].getX2(), bezier[2].getY2(), bezier[3].getX2(), bezier[2].getY2());
+		bezier[4] = new Line(bezier[3].getX2(), bezier[3].getY2(), bezier[3].getX2(), bezier[4].getY2());
+		return new CurvedPolygon(bezier);
+	
+	}
+	/**	
+	 *   _____
+	 *  |  ___|
+	 *  | | 
+	 *  | |___
+	 * a|  ___|f
+	 *  | |e  
+	 *  | |__d
+	 *  |____| c
+	 *    b
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @param e
+	 * @param f
+	 * @return
+	 */
+	public static CurvedPolygon createControlAndOrBlockShape(int a, int b, int c, int d, int e, int f){
+		List<BezierCurve> segments = new ArrayList<>();
+		segments.add(new Line(0, 0, 0, a));
+		segments.add(new Line(0, a, b, a));
+		segments.add(new Line(b, a, b, a-c));
+		segments.add(new Line(b, a-c, b-d, a-c));
+		segments.add(new Line(b-d, a-c, b-d, a-c-e));
+		segments.add(new Line(b-d, a-c-e, b, a-c-e));
+		segments.add(new Line(b, a-c-e, b, a-c-e-f));
+		segments.add(new Line(b, a-c-e-f, b-d, a-c-e-f));
+		segments.add(new Line(b-d, a-c-e-f, b-d, a-c-e-f-e));
+		segments.add(new Line(b-d, a-c-e-f-e, b, a-c-e-f-e));
+		segments.add(new Line(b, a-c-e-f-e, b, 0));
+		segments.add(new Line(b, 0, 0, 0));
+		return new CurvedPolygon(segments);
+	}
+	
+	
 	public static List<AbstractBlockElement> createImpliesNot(){
 		List<AbstractBlockElement> visualParts = new ArrayList<AbstractBlockElement>();
 		final ControlIfBlockModel model = new ControlIfBlockModel(createImpliesOrImplies(), new AffineTransform(1,0,0,1,1,1),Color.YELLOW, null, ControlBlockType.NOT_IMPLIES);
@@ -50,9 +139,7 @@ public class ControlShapeService {
 	
 	public static CurvedPolygon createImpliesOrImplies() {
 		List<BezierCurve> segments = new ArrayList<>();
-		int w = 70;
-		int l = 160;
-		int m = 30;
+	
 		segments.add(new Line(0, 0, 60, 0));
 		segments.add(new Line(60, 0, 60 ,30));
 		segments.add(new Line(60, 30, 30, 30));

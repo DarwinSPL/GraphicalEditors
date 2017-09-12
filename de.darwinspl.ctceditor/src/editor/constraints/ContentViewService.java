@@ -29,7 +29,7 @@ import editor.model.choiceboxes.ChoiceBoxFeatureModel;
 import editor.model.choiceboxes.ChoiceBoxModel.ChoiceBoxType;
 import editor.model.choiceboxes.ChoiceBoxValueModel;
 import editor.model.context.TextFieldModel;
-import editor.model.control.ControlBlockModel.ControlValidateOperatorBlockType;
+import editor.model.control.ControlValidateOperatorBlockModel.ControlValidateOperatorBlockType;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;

@@ -113,7 +113,6 @@ import eu.hyvar.feature.expression.HyNotExpression;
 import eu.hyvar.feature.expression.HyOrExpression;
 import eu.hyvar.feature.expression.HyUnaryExpression;
 import eu.hyvar.feature.expression.HyValueExpression;
-import eu.hyvar.feature.graphical.base.model.HyFeatureModelWrapped;
 import eu.hyvar.feature.util.HyFeatureResolverUtil;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;

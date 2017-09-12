@@ -8,6 +8,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class ControlValidateOperatorBlockModel extends ControlBlockModel {
+	public enum ControlValidateOperatorBlockType {
+		VALIDATE, VALIDATE_NOT
+	}
 
 	public ControlValidateOperatorBlockModel(IShape shape, AffineTransform transform, Color stroke, double strokeWidth,
 			Paint fill, Effect effect, ControlValidateOperatorBlockType type) {

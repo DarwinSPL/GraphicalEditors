@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.eclipse.gef.common.collections.ObservableMultiset;
 import org.eclipse.gef.fx.nodes.GeometryNode;
+import org.eclipse.gef.geometry.planar.CurvedPolygon;
 import org.eclipse.gef.geometry.planar.IGeometry;
 import org.eclipse.gef.geometry.planar.IShape;
 import org.eclipse.gef.mvc.fx.parts.IVisualPart;
@@ -12,12 +13,15 @@ import org.eclipse.gef.mvc.fx.parts.IVisualPart;
 import com.google.common.collect.Multiset.Entry;
 
 import editor.ControlShapeService;
+import editor.ShapeService;
 import editor.model.AbstractBlockElement;
 import editor.model.AbstractGeometricElement;
+import editor.model.control.ControlAndOrBlock;
 import editor.model.control.ControlBlockModel;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;
+import editor.model.control.ControlBlockModel.ControlBlockOperandType;
 import editor.model.nodes.TextModel.TextType;
 import editor.parts.GeometricShapePart;
 import editor.parts.nodes.TextPart;
@@ -102,8 +106,36 @@ public class ControlBlockPart extends GeometricShapePart {
 
 			Bounds b11 = anchorage.getVisual().getBoundsInParent();
 			Bounds b22 = getVisual().getBoundsInParent();
-
-			if (getContent() instanceof ControlBlockModel) {
+			
+			
+			
+			if(anchPart.getContent() instanceof ControlAndOrBlock){
+				
+				ControlBlockModel childModel = getContent();
+				
+				Double childHight = childModel.getGeometry().getBounds().getHeight();
+				
+				CurvedPolygon newShape;
+				if(childModel.getOperandType().equals(ControlBlockOperandType.OPERAND1)){
+					
+				
+					
+					newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand1((CurvedPolygon)anchPart.getContent().getGeometry(), childHight);
+					
+					
+					
+					
+				} else{
+				 newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand2((CurvedPolygon)anchPart.getContent().getGeometry(), childHight);	
+				}
+				
+				anchPart.getContent().setGeometry(newShape);
+				anchPart.refreshVisual();
+				System.out.println("in the refresh");
+				
+			}
+			
+			else if (getContent() instanceof ControlBlockModel) {
 
 				double childHightsAdded = 0;
 				

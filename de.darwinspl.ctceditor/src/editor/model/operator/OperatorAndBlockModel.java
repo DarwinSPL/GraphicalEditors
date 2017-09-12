@@ -30,12 +30,12 @@ public class OperatorAndBlockModel extends OperatorMovableBlockModel {
 			OperatorAndORType type) {
 		super(shape, transform, fill, effect);
 		this.operatorAndORType = type;
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
 	public OperatorAndBlockModel getCopy() {
-		// TODO Auto-generated method stub
+		
 		OperatorAndBlockModel copy = new OperatorAndBlockModel((IShape) getGeometry().getCopy(),
 				(AffineTransform) getTransform().getCopy(), getFill(), getEffect(), getOperatorAndORType());
 		return copy;

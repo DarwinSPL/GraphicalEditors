@@ -2,6 +2,8 @@ package editor.handlers;
 
 import org.eclipse.gef.common.adapt.AdapterKey;
 import org.eclipse.gef.geometry.planar.Dimension;
+import org.eclipse.gef.geometry.planar.ICurve;
+import org.eclipse.gef.geometry.planar.IShape;
 import org.eclipse.gef.mvc.fx.domain.IDomain;
 import org.eclipse.gef.mvc.fx.handlers.AbstractHandler;
 import org.eclipse.gef.mvc.fx.models.SelectionModel;
@@ -11,7 +13,9 @@ import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import editor.model.AbstractBlockElement;
 import editor.model.arithmetical.ArithmeticalOperatorFixedBlock;
 import editor.model.arithmetical.ArithmeticalOperatorMovableBlock;
+import editor.model.control.ControlAndOrBlock;
 import editor.model.control.ControlBlockModel;
+import editor.model.control.ControlBlockModel.ControlBlockOperandType;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.operator.OperatorFixedBlockModel;
 import editor.model.operator.OperatorMovableBlockModel;
@@ -22,9 +26,16 @@ import editor.parts.control.ControlBlockPart;
 import editor.parts.operator.OperatorFixedBlockPart;
 import editor.parts.operator.OperatorMovableBlockPart;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.DropShadowBuilder;
 import javafx.scene.input.MouseDragEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
+import javafx.scene.transform.Affine;
 
 /**
  * Handler for the drag over gestures
@@ -40,6 +51,28 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 	public void mouseDragOver(MouseDragEvent event, Dimension delta) {
 
 	}
+	
+	
+	private boolean isBlockAddedAsOperand1(ControlBlockPart childBlock, ControlBlockPart part){
+		
+		double childMinY = childBlock.getVisual().getBoundsInParent().getMinY();
+		
+		Bounds parentBound = part.getVisual().getBoundsInParent();
+		
+		double parentHight = parentBound.getHeight();
+		System.out.println(parentHight);
+		
+		double parentMinY = parentBound.getMinY();
+		System.out.println(parentMinY);
+		double half = parentMinY + (parentHight/2);
+		System.out.println(childMinY);
+		
+		if(half < childMinY){
+		    return false;
+		}else{
+			return true;
+		}
+	}
 
 	@Override
 	public void mouseDragEnteredTarget(MouseDragEvent event, Dimension delta) {
@@ -47,6 +80,89 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 
 		ColorAdjust colorAdjust = new ColorAdjust();
 		colorAdjust.setBrightness(0.5);
+		
+		System.out.println("IN " +  getHost().getContent());
+		if(getHost() instanceof ControlBlockPart){
+			
+			ControlBlockPart part = (ControlBlockPart) getHost();
+
+			ControlAndOrBlock controlBlock;
+			
+			Object o = getHost().getContent();
+			
+
+			if (o instanceof ControlAndOrBlock) {
+				controlBlock = (ControlAndOrBlock) o;
+		
+
+				ObservableList<IContentPart<? extends Node>> list2 = getContentViewer().getAdapter(SelectionModel.class)
+						.getSelectionUnmodifiable();
+
+				for (IContentPart<? extends Node> n : list2) {
+
+					if (n instanceof ControlBlockPart) {
+
+						ControlBlockPart childBlock = (ControlBlockPart) n;
+					
+						DropShadow dropShadow = new DropShadow(50, Color.GREY);
+						DropShadow ds2 = new DropShadow(50, Color.LIGHTBLUE);
+						 //Setting the height of the shadow
+					      dropShadow.setHeight(5); 
+					      
+					      //Setting the width of the shadow 
+					      dropShadow.setWidth(5); 
+					      
+					      //Setting the radius of the shadow 
+					      dropShadow.setRadius(5); 
+					      
+					      //setting the offset of the shadow 
+					      dropShadow.setOffsetX(3); 
+					      dropShadow.setOffsetY(2); 
+					      
+					      //Setting the spread of the shadow 
+					      dropShadow.setSpread(12); 
+						
+//					      node.setStyle("-fx-effect: dropshadow(three-pass-box, purple, 0.0, 25.0, 0.0, -5.0);"); //north
+						if(isBlockAddedAsOperand1(childBlock, part)){
+							controlBlock.setEffect(dropShadow);
+							part.refreshVisual();
+							
+						}else{
+							DropShadow dstest = new DropShadow(null, Color.RED, 0.0, 25.0, 10.0, 5.0);
+							controlBlock.setEffect(dstest);
+							IShape shapebefore = part.getVisual().geometryProperty().getValue();
+							ICurve curveBefore = shapebefore.getOutline();
+						
+							double h1 = part.getVisual().getBoundsInParent().getHeight();
+							part.refreshVisual();
+						
+							IShape shape = part.getVisual().geometryProperty().getValue();
+							ICurve curveAfter = shape.getOutline();
+					
+						    double h2 = part.getVisual().getBoundsInParent().getHeight();
+						    
+						    part.refreshVisual();
+						    IShape shapetest = part.getVisual().getGeometry();
+						    
+						
+							IShape hhh = part.getVisual().geometryProperty().get();
+							
+							
+							
+							
+							if(curveAfter.equals(curveBefore)){
+							System.out.println("ja");
+							}
+						
+						}
+						
+
+					}
+
+				}
+			
+			}
+		}
 
 		if ((getHost()) instanceof ControlBlockPart) {
 			ControlBlockPart part = (ControlBlockPart) getHost();
@@ -143,6 +259,8 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 
 		if ((getHost()) instanceof ControlBlockPart) {
 			ControlBlockPart part = (ControlBlockPart) getHost();
+			
+		
 
 			ColorAdjust colorAdjust = new ColorAdjust();
 			colorAdjust.setBrightness(0);
@@ -156,8 +274,13 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 
 				part.refreshVisual();
 				
+			}else if(o instanceof ControlAndOrBlock){
+				ControlAndOrBlock child = (ControlAndOrBlock) o;
+				child.setEffect(null);
+				part.refreshVisual();
 			}
 		}
+		
 		if ((getHost()) instanceof OperatorFixedBlockPart) {
 			OperatorFixedBlockPart part = (OperatorFixedBlockPart) getHost();
 
@@ -187,8 +310,50 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 
 		if ((getHost()) instanceof ControlBlockPart) {
 
-			ControlBlockPart controlBlockPart = (ControlBlockPart) getHost();
+			ControlBlockPart parentPart = (ControlBlockPart) getHost();
 			Object o = getHost().getContent();
+			
+			
+			if(o instanceof ControlAndOrBlock){
+				
+				ControlAndOrBlock parentModel = (ControlAndOrBlock) o;
+				ObservableList<IContentPart<? extends Node>> selectedParts = getContentViewer().getAdapter(SelectionModel.class)
+						.getSelectionUnmodifiable();
+
+				for (IContentPart<? extends Node> n : selectedParts) {
+
+					if (n instanceof ControlBlockPart) {
+						ControlBlockPart childPart = (ControlBlockPart) n;
+						if (!(childPart.getAnchoragesUnmodifiable().containsEntry(parentPart,
+								AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE) && !(parentPart.getAnchoragesUnmodifiable().containsEntry(n, AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE)))) {
+							
+							
+							ControlBlockModel childModel = childPart.getContent();
+							
+				
+								if(childModel.getParentBlock()== null){
+									if(isBlockAddedAsOperand1(childPart, parentPart)){ 
+									childModel.setOperandType(ControlBlockOperandType.OPERAND1);
+									} else{
+										childModel.setOperandType(ControlBlockOperandType.OPERAND2);
+									}
+									childModel.setParentBlock(parentModel);
+									childPart.refreshContentAnchorages();
+									childPart.refreshVisual();
+								}
+									
+							}
+							 
+						
+						else {
+							childPart.doAttachToAnchorageVisual(parentPart, "relink");
+						}
+					}
+
+		
+				}
+				
+			}
 
 			if (o instanceof ControlIfBlockModel) {
 
@@ -200,8 +365,8 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 
 					if (n instanceof ControlBlockPart) {
 
-						if (!((ControlBlockPart) n).getAnchoragesUnmodifiable().containsEntry(controlBlockPart,
-								AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE) && !(controlBlockPart.getAnchoragesUnmodifiable().containsEntry(n, AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE))) {
+						if (!((ControlBlockPart) n).getAnchoragesUnmodifiable().containsEntry(parentPart,
+								AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE) && !(parentPart.getAnchoragesUnmodifiable().containsEntry(n, AbstractBlockElement.MOVABLE_CHILD_ANCHORED_TYPE))) {
 							
 							ControlBlockModel childBlockModel = ((ControlBlockPart) n).getContent();
 							if(controlBlock.getChildBlocks().isEmpty()){
@@ -213,7 +378,7 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 							}
 						} 
 						else {
-							((ControlBlockPart) n).doAttachToAnchorageVisual(controlBlockPart, "relink");
+							((ControlBlockPart) n).doAttachToAnchorageVisual(parentPart, "relink");
 						}
 					}
 

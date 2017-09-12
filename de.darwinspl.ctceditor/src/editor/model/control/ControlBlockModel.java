@@ -14,9 +14,20 @@ import javafx.scene.effect.Effect;
 import javafx.scene.paint.Paint;
 
 public class ControlBlockModel extends GeometricShape {
+	
+	
 
-	public enum ControlValidateOperatorBlockType {
-		VALIDATE, VALIDATE_NOT
+	public enum ControlBlockOperandType{
+		OPERAND1, OPERAND2;
+	}
+
+	private ControlBlockOperandType operandType;
+	public ControlBlockOperandType getOperandType() {
+		return operandType;
+	}
+
+	public void setOperandType(ControlBlockOperandType operandType) {
+		this.operandType = operandType;
 	}
 
 	public static final String VALID_SINCE_PROPERTY = "valid_since_property";
@@ -66,13 +77,33 @@ public class ControlBlockModel extends GeometricShape {
 			parentBlockProperty.set(parentBlock);
 			((ControlIfBlockModel) parentBlock).addChildBlock(this);
 		}
+		
+		else if(parentBlock instanceof ControlAndOrBlock){
+			parentBlockProperty.set(parentBlock);
+			if(getOperandType().equals(ControlBlockOperandType.OPERAND1)){
+				((ControlAndOrBlock) parentBlock).setControlBlockOperand1(this);
+			}
+			else{
+				((ControlAndOrBlock) parentBlock).setControlBlockOperand2(this);
+			}
+			
+		} 
 	}
 
 	@Override
 	public void removeParentBlock() {
 
 		if (getParentBlock() != null) {
+			if(getParentBlock() instanceof ControlIfBlockModel){
 			((ControlIfBlockModel) getParentBlock()).removeChildBlock(this);
+			}
+			if(getParentBlock() instanceof ControlAndOrBlock){
+				if(getOperandType().equals(ControlBlockOperandType.OPERAND1)){
+				((ControlAndOrBlock) getParentBlock()).removeControlBlockOperand1();
+				}else{
+					((ControlAndOrBlock) getParentBlock()).removeControlBlockOperand2();
+				}
+			}
 			parentBlockProperty.set(null);
 
 		}
@@ -80,9 +111,15 @@ public class ControlBlockModel extends GeometricShape {
 	}
 
 	@Override
-	public ControlIfBlockModel getParentBlock() {
+	public ControlBlockModel getParentBlock() {
 		
+		if(super.getParentBlock() instanceof ControlIfBlockModel){
 		return (ControlIfBlockModel) super.getParentBlock();
+		}else if(super.getParentBlock() instanceof ControlAndOrBlock){
+			return (ControlAndOrBlock) super.getParentBlock();
+		}else{
+			return (ControlBlockModel) super.getParentBlock();
+		}
 	}
 
 }
