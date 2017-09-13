@@ -38,6 +38,7 @@ import com.google.inject.util.Modules;
 import de.christophseidl.util.eclipse.ResourceUtil;
 import de.christophseidl.util.ecore.EcoreIOUtil;
 import de.darwinspl.ctceditor.CTCEditorUiModule;
+import de.darwinspl.feature.graphical.base.model.DwFeatureModelWrapped;
 import editor.ArithmeticalOperatorShapeService;
 import editor.FeatureShapeService;
 import editor.GraphicalEditor;
@@ -202,7 +203,7 @@ public class CTCEditor extends AbstractFXEditor {
 
        	 }
        	 if(c instanceof EvolutionViewRootPart){
-       		HyFeatureModelWrapped modelWrapped = new HyFeatureModelWrapped(featureModel);
+       		DwFeatureModelWrapped modelWrapped = new DwFeatureModelWrapped(featureModel);
     		List<Date> dates  = modelWrapped.getDates();
        		
        		 ((EvolutionSliderPart) c).getContent().setDatesSlider(dates);
@@ -278,7 +279,7 @@ public class CTCEditor extends AbstractFXEditor {
 		
 		featureModelFile = EcoreIOUtil.getFile(featureModel);
 		
-		HyFeatureModelWrapped modelWrapped = new HyFeatureModelWrapped(featureModel);
+		DwFeatureModelWrapped modelWrapped = new DwFeatureModelWrapped(featureModel);
 		List<Date> list  = modelWrapped.getDates();
 		
 
