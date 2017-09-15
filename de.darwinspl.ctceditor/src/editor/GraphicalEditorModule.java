@@ -67,7 +67,9 @@ import editor.handlers.CreateShapeOnClickHandler;
 import editor.handlers.DeleteIncludingAnchorages;
 import editor.handlers.OnDragOverNodeHandler;
 import editor.handlers.RelocateLinkedOnDragHandler;
-import editor.handlers.ResizeTransformIncludeAnchoragesHandler;
+
+//TODO: wieder einfügen
+//import editor.handlers.ResizeTransformIncludeAnchoragesHandler;
 import editor.handlers.ResizeTransformSelectedIncludingAnchoragesOnHandleDragHandler;
 import editor.handlers.TranslateOnDragHandler;
 import editor.parts.BlockContextViewHandlePart;
@@ -428,8 +430,10 @@ public class GraphicalEditorModule extends MvcFxModule {
 		// select on type
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(SelectFocusedOnTypeHandler.class);
 		// hover behavior
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(HoverBehavior.class);
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(HoverIntentBehavior.class);
+		
+		//TODO: wieder hinzufügen - beides
+//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(HoverBehavior.class);
+//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(HoverIntentBehavior.class);
 		// select-all on type
 		bindSelectAllOnTypeHandlerAsContentViewerRootPartAdapter(adapterMapBinder);
 		// bindOnDragOverNodeHandlerAsIRootPartAdapter(adapterMapBinder);
@@ -771,7 +775,9 @@ public class GraphicalEditorModule extends MvcFxModule {
 		// single selection: resize relocate on handle drag without modifier
 		// adapterMapBinder.addBinding(AdapterKey.defaultRole())
 		// .to(ResizeTranslateFirstAnchorageOnHandleDragHandler.class);
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ResizeTransformIncludeAnchoragesHandler.class);
+		
+		//TODO: Wieder einfügen
+		//adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ResizeTransformIncludeAnchoragesHandler.class);
 		// rotate on drag + control
 		// adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(RotateSelectedOnHandleDragHandler.class);
 

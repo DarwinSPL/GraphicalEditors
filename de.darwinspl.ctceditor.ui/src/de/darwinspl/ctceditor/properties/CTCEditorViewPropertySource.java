@@ -22,9 +22,9 @@ import de.darwinspl.ctceditor.editors.CTCEditor;
 
 public class CTCEditorViewPropertySource implements IPropertySource {
 
-	private static final IPropertyDescriptor SNAP_TO_GRID_PROPERTY_DESCRIPTOR = new ComboBoxPropertyDescriptor(
-			GridModel.SNAP_TO_GRID_PROPERTY, "Snap To Grid",
-			new String[] { Boolean.FALSE.toString(), Boolean.TRUE.toString() });
+//	private static final IPropertyDescriptor SNAP_TO_GRID_PROPERTY_DESCRIPTOR = new ComboBoxPropertyDescriptor(
+//			GridModel.SNAP_TO_GRID_PROPERTY, "Snap To Grid",
+//			new String[] { Boolean.FALSE.toString(), Boolean.TRUE.toString() });
 	private static final IPropertyDescriptor GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR = new TextPropertyDescriptor(
 			GridModel.GRID_CELL_WIDTH_PROPERTY, "Grid Cell Width");
 	private static final IPropertyDescriptor GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR = new TextPropertyDescriptor(
@@ -47,16 +47,32 @@ public class CTCEditorViewPropertySource implements IPropertySource {
 
 	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return new IPropertyDescriptor[] { SNAP_TO_GRID_PROPERTY_DESCRIPTOR,
+		return new IPropertyDescriptor[] { 
+//				SNAP_TO_GRID_PROPERTY_DESCRIPTOR,
 				GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR,
 				GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR };
 	}
+	
+	
 
+//	@Override
+//	public Object getPropertyValue(Object id) {
+//		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return getGridModel().snapToGridProperty().get() ? 1 : 0;
+//		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return Double
+//					.toString(getGridModel().gridCellWidthProperty().get());
+//		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return Double
+//					.toString(getGridModel().gridCellHeightProperty().get());
+//		} else {
+//			return null;
+//		}
+//	}
+	
 	@Override
 	public Object getPropertyValue(Object id) {
-		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
-			return getGridModel().snapToGridProperty().get() ? 1 : 0;
-		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+		if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
 			return Double
 					.toString(getGridModel().gridCellWidthProperty().get());
 		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {
@@ -67,12 +83,25 @@ public class CTCEditorViewPropertySource implements IPropertySource {
 		}
 	}
 
+//	@Override
+//	public boolean isPropertySet(Object id) {
+//		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return getGridModel().snapToGridProperty()
+//					.get() == GridModel.SNAP_TO_GRID_DEFAULT;
+//		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return getGridModel().gridCellWidthProperty()
+//					.get() == GridModel.GRID_CELL_WIDTH_DEFAULT;
+//		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			return getGridModel().gridCellHeightProperty()
+//					.get() == GridModel.GRID_CELL_HEIGHT_DEFAULT;
+//		} else {
+//			return false;
+//		}
+//	}
+	
 	@Override
 	public boolean isPropertySet(Object id) {
-		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
-			return getGridModel().snapToGridProperty()
-					.get() == GridModel.SNAP_TO_GRID_DEFAULT;
-		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+	if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
 			return getGridModel().gridCellWidthProperty()
 					.get() == GridModel.GRID_CELL_WIDTH_DEFAULT;
 		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {
@@ -85,10 +114,11 @@ public class CTCEditorViewPropertySource implements IPropertySource {
 
 	@Override
 	public void resetPropertyValue(Object id) {
-		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
-			getGridModel().snapToGridProperty()
-					.set(GridModel.SNAP_TO_GRID_DEFAULT);
-		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			getGridModel().snapToGridProperty()
+//					.set(GridModel.SNAP_TO_GRID_DEFAULT);
+//		} else
+		if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
 			getGridModel().gridCellWidthProperty()
 					.set(GridModel.GRID_CELL_WIDTH_DEFAULT);
 		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {
@@ -99,10 +129,11 @@ public class CTCEditorViewPropertySource implements IPropertySource {
 
 	@Override
 	public void setPropertyValue(Object id, Object value) {
-		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
-			getGridModel().snapToGridProperty()
-					.set(value instanceof Integer && ((Integer) value) == 1);
-		} else if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//		if (SNAP_TO_GRID_PROPERTY_DESCRIPTOR.getId().equals(id)) {
+//			getGridModel().snapToGridProperty()
+//					.set(value instanceof Integer && ((Integer) value) == 1);
+//		} else
+		if (GRID_CELL_WIDTH_PROPERTY_DESCRIPTOR.getId().equals(id)) {
 			getGridModel().gridCellWidthProperty()
 					.set(Double.parseDouble((String) value));
 		} else if (GRID_CELL_HEIGHT_PROPERTY_DESCRIPTOR.getId().equals(id)) {

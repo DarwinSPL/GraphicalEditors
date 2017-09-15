@@ -458,7 +458,7 @@ else if (anchorage instanceof ControlBlockPart) {
 			
 		}
 		else if(getContent() instanceof ControlIfBlockModel){
-			System.out.println("Method not implemented yet");
+			//System.out.println("Method not implemented yet");
 		}
 		
 	}

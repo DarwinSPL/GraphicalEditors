@@ -344,8 +344,12 @@ public class CTCEditor extends AbstractFXEditor {
 			scrollActionGroup.dispose();
 			scrollActionGroup = null;
 		}
-		if (fitToViewportLockAction != null) {
-			fitToViewportLockAction.dispose();
+		if (fitToViewportLockAction != null) 
+		
+		{
+			
+		    //TODO: wieder hinzufügen
+			//fitToViewportLockAction.dispose();
 			fitToViewportLockAction = null;
 		}
 
@@ -1083,11 +1087,21 @@ public class CTCEditor extends AbstractFXEditor {
 		super.createPartControl(parent);
 		// create actions
 		zoomActionGroup = new ZoomActionGroup(new FitToViewportAction());
-		zoomActionGroup.init(getContentViewer());
+		
+		zoomActionGroup.setAdaptable(getContentViewer());
+		//zoomActionGroup.init(getContentViewer());
+		
+		
 		fitToViewportLockAction = new FitToViewportLockAction();
-		fitToViewportLockAction.init(getContentViewer());
+		
+		
+		fitToViewportLockAction.setAdaptable(getContentViewer());
+		//fitToViewportLockAction.init(getContentViewer());
 		scrollActionGroup = new ScrollActionGroup();
-		scrollActionGroup.init(getContentViewer());
+		
+		scrollActionGroup.setAdaptable(getContentViewer());
+		//scrollActionGroup.init(getContentViewer());
+		
 		// contribute to toolbar
 		IActionBars actionBars = getEditorSite().getActionBars();
 		IToolBarManager mgr = actionBars.getToolBarManager();

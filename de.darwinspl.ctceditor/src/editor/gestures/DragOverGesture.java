@@ -170,7 +170,7 @@ public class DragOverGesture extends AbstractGesture {
 			// hierarchy so that the viewer cannot be determined for
 			// the target node anymore. If that is the case, no drag
 			// policies should be notified about the event.
-			policies = getTargetPolicyResolver().resolve(DragOverGesture.this, target, activeViewer,
+			policies = getHandlerResolver().resolve(DragOverGesture.this, target, activeViewer,
 					ON_DRAG_OVER_POLICY_KEY);
 		}
 
