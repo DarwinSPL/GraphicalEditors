@@ -81,7 +81,7 @@ public class ControlShapeService {
 	public static CurvedPolygon adjustControlAndOrBlockShapeOperand2(CurvedPolygon currentShape, double newHight ){
 		BezierCurve[] bezier = currentShape.getOutlineSegments();
 		newHight = newHight +2;
-		double currentHight = bezier[8].getY1() - bezier[8].getY2();
+		double currentHight = bezier[4].getY1() - bezier[4].getY2();
 		double difference = newHight - currentHight;
 		
 		bezier[0] = new Line(bezier[0].getX1(), bezier[0].getY1(), bezier[0].getX2(), bezier[0].getY2()+ difference);

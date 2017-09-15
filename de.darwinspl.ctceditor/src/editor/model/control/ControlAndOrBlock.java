@@ -58,8 +58,8 @@ public class ControlAndOrBlock extends ControlBlockModel{
 		return copy;
 	}
 
-	public ObjectProperty<ControlBlockModel> getControlBlockOperand1() {
-		return controlBlockOperand1;
+	public ControlBlockModel getControlBlockOperand1() {
+		return controlBlockOperand1.get();
 	}
 	
 	public void setControlBlockOperand1(ControlBlockModel model){
@@ -70,8 +70,8 @@ public class ControlAndOrBlock extends ControlBlockModel{
 		controlBlockOperand1.set(null);
 	}
 
-	public ObjectProperty<ControlBlockModel> getControlBlockOperand2() {
-		return controlBlockOperand2;
+	public ControlBlockModel getControlBlockOperand2() {
+		return controlBlockOperand2.get();
 	}
 	
 	public void setControlBlockOperand2(ControlBlockModel model){

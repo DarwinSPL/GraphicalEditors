@@ -28,14 +28,10 @@ import editor.parts.operator.OperatorMovableBlockPart;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.DropShadowBuilder;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
-import javafx.scene.transform.Affine;
 
 /**
  * Handler for the drag over gestures
@@ -60,12 +56,12 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 		Bounds parentBound = part.getVisual().getBoundsInParent();
 		
 		double parentHight = parentBound.getHeight();
-		System.out.println(parentHight);
+//		System.out.println(parentHight);
 		
 		double parentMinY = parentBound.getMinY();
-		System.out.println(parentMinY);
+//		System.out.println(parentMinY);
 		double half = parentMinY + (parentHight/2);
-		System.out.println(childMinY);
+//		System.out.println(childMinY);
 		
 		if(half < childMinY){
 		    return false;
@@ -81,7 +77,7 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 		ColorAdjust colorAdjust = new ColorAdjust();
 		colorAdjust.setBrightness(0.5);
 		
-		System.out.println("IN " +  getHost().getContent());
+		
 		if(getHost() instanceof ControlBlockPart){
 			
 			ControlBlockPart part = (ControlBlockPart) getHost();
@@ -151,7 +147,8 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 							
 							
 							if(curveAfter.equals(curveBefore)){
-							System.out.println("ja");
+
+
 							}
 						
 						}
@@ -331,15 +328,26 @@ public class OnDragOverNodeHandler extends AbstractHandler implements IOnDragOve
 							ControlBlockModel childModel = childPart.getContent();
 							
 				
+							
 								if(childModel.getParentBlock()== null){
-									if(isBlockAddedAsOperand1(childPart, parentPart)){ 
-									childModel.setOperandType(ControlBlockOperandType.OPERAND1);
+									
+									if(isBlockAddedAsOperand1(childPart, parentPart)){
+
+									  if(parentModel.getControlBlockOperand1()==null){
+									  childModel.setOperandType(ControlBlockOperandType.OPERAND1);
+									  childModel.setParentBlock(parentModel);
+										childPart.refreshContentAnchorages();
+										childPart.refreshVisual();
+									  }
 									} else{
+										if(parentModel.getControlBlockOperand2()==null){
 										childModel.setOperandType(ControlBlockOperandType.OPERAND2);
+										childModel.setParentBlock(parentModel);
+										childPart.refreshContentAnchorages();
+										childPart.refreshVisual();
+										}
 									}
-									childModel.setParentBlock(parentModel);
-									childPart.refreshContentAnchorages();
-									childPart.refreshVisual();
+									
 								}
 									
 							}

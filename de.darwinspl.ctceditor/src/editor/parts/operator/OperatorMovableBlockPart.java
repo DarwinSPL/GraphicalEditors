@@ -345,7 +345,7 @@ public class OperatorMovableBlockPart extends GeometricShapePart {
 	 * @param parent
 	 * @return
 	 */
-	protected List<IContentPart<? extends Node>> refreshAnchoredsRecursive(List<IContentPart<? extends Node>> linked,
+	public List<IContentPart<? extends Node>> refreshAnchoredsRecursive(List<IContentPart<? extends Node>> linked,
 			IContentPart<? extends Node> parent) {
 		@SuppressWarnings("unchecked")
 		// List<IContentPart<? extends Node>> anch =

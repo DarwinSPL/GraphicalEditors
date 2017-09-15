@@ -1,5 +1,6 @@
 package editor.parts.control;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -8,7 +9,9 @@ import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.geometry.planar.CurvedPolygon;
 import org.eclipse.gef.geometry.planar.IGeometry;
 import org.eclipse.gef.geometry.planar.IShape;
+import org.eclipse.gef.mvc.fx.parts.IContentPart;
 import org.eclipse.gef.mvc.fx.parts.IVisualPart;
+import org.eclipse.gef.mvc.fx.parts.PartUtils;
 
 import com.google.common.collect.Multiset.Entry;
 
@@ -23,7 +26,9 @@ import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;
 import editor.model.control.ControlBlockModel.ControlBlockOperandType;
 import editor.model.nodes.TextModel.TextType;
+import editor.parts.AbstractGeometricElementPart;
 import editor.parts.GeometricShapePart;
+import editor.parts.nodes.AbstractNodePart;
 import editor.parts.nodes.TextPart;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -118,20 +123,44 @@ public class ControlBlockPart extends GeometricShapePart {
 				CurvedPolygon newShape;
 				if(childModel.getOperandType().equals(ControlBlockOperandType.OPERAND1)){
 					
-				
+				anchPart.resizeBlock(true, childHight, 0);
 					
-					newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand1((CurvedPolygon)anchPart.getContent().getGeometry(), childHight);
+//					newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand1((CurvedPolygon)anchPart.getContent().getGeometry(), childHight);
+//					
+//					
+//
+//					
+//					anchPart.getContent().setGeometry(newShape);
+//					anchPart.refreshVisual();
 					
+					b11 = anchorage.getVisual().getBoundsInParent();
 					
+					double nX = b11.getMinX() + 19;
+					double nY = b11.getMinY() + 13;
+
+					distanceX = nX - b22.getMinX();
+					distanceY = nY - b22.getMinY();
+					transformBlock(distanceX, distanceY);
+			
+					anchPart.resizeParentBlocks(true, anchPart.getContent().getGeometry().getBounds().getHeight(), 0);
 					
 					
 				} else{
-				 newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand2((CurvedPolygon)anchPart.getContent().getGeometry(), childHight);	
+				 anchPart.resizeBlock(false, childHight, 0);
+				 
+					b11 = anchorage.getVisual().getBoundsInParent();
+				 
+					double nX = b11.getMinX() + 16;
+					double nY = b11.getMaxY() - 14 - b22.getHeight();
+
+					distanceX = nX - b22.getMinX();
+					distanceY = nY - b22.getMinY();
+					transformBlock(distanceX, distanceY);
+					anchPart.resizeParentBlocks(false, anchPart.getContent().getGeometry().getBounds().getHeight(), 0);
 				}
 				
-				anchPart.getContent().setGeometry(newShape);
-				anchPart.refreshVisual();
-				System.out.println("in the refresh");
+				
+
 				
 			}
 			
@@ -196,9 +225,7 @@ public class ControlBlockPart extends GeometricShapePart {
 				distanceX = nX - b22.getMinX();
 				distanceY = nY - b22.getMinY();
 
-				getContent().getTransform().translate(distanceX, distanceY);
-				refreshVisual();
-				relocateAnchorads(distanceX, distanceY);
+				transformBlock(distanceX, distanceY);
 				
 				if (anchPart.getContent().getParentBlock() != null) {
 
@@ -227,6 +254,7 @@ public class ControlBlockPart extends GeometricShapePart {
 				}
 
 				
+				anchPart.resizeParentBlocks(true, anchPart.getContent().getGeometry().getBounds().getHeight(), 0);
 				
 		
 			} else {
@@ -239,22 +267,66 @@ public class ControlBlockPart extends GeometricShapePart {
 				distanceX = nX - b22.getMinX();
 				distanceY = nY - b22.getMinY();
 
-				getContent().getTransform().translate(distanceX, distanceY);
-
-				refreshVisual();
-				relocateAnchorads(distanceX, distanceY);
+				transformBlock(distanceX, distanceY);
 			}
 
 			// relocateAnchorads(distanceX, distanceY);
 
 		}
 		}else{
-			if (anchorage instanceof ControlBlockPart) {
+			
+			ControlBlockPart anchPart = (ControlBlockPart) anchorage;
 
-				ControlBlockPart anchPart = (ControlBlockPart) anchorage;
+			Bounds b11 = anchorage.getVisual().getBoundsInParent();
+			Bounds b22 = getVisual().getBoundsInParent();
+			
+if(anchPart.getContent() instanceof ControlAndOrBlock){
+				
+				ControlBlockModel childModel = getContent();
+				
+				
+				
+				
+				if(childModel.getOperandType().equals(ControlBlockOperandType.OPERAND1)){
+					
+				//anchPart.resizeBlock(true, childHight, 0);
+					
+					
+					b11 = anchorage.getVisual().getBoundsInParent();
+					
+					double nX = b11.getMinX() + 19;
+					double nY = b11.getMinY() + 13;
 
-				Bounds b11 = anchorage.getVisual().getBoundsInParent();
-				Bounds b22 = getVisual().getBoundsInParent();
+					distanceX = nX - b22.getMinX();
+					distanceY = nY - b22.getMinY();
+					transformBlock(distanceX, distanceY);
+			
+					//anchPart.resizeParentBlocks(true, anchPart.getContent().getGeometry().getBounds().getHeight(), 0);
+					
+					
+				} else{
+				
+				 
+					b11 = anchorage.getVisual().getBoundsInParent();
+				 
+					double nX = b11.getMinX() + 16;
+					double nY = b11.getMaxY() - 14 - b22.getHeight();
+
+					distanceX = nX - b22.getMinX();
+					distanceY = nY - b22.getMinY();
+					transformBlock(distanceX, distanceY);
+					//anchPart.resizeParentBlocks(true, anchPart.getContent().getGeometry().getBounds().getHeight(), 0);
+				}
+				
+				
+
+				
+			}
+			
+			
+else if (anchorage instanceof ControlBlockPart) {
+
+				
 
 				if (getContent() instanceof ControlBlockModel) {
 
@@ -299,9 +371,7 @@ public class ControlBlockPart extends GeometricShapePart {
 					distanceX = nX - b22.getMinX();
 					distanceY = nY - b22.getMinY();
 
-					getContent().getTransform().translate(distanceX, distanceY);
-					refreshVisual();
-					relocateAnchorads(distanceX, distanceY);
+					transformBlock(distanceX, distanceY);
 					
 //					if (anchPart.getContent().getParentBlock() != null) {
 //
@@ -342,10 +412,7 @@ public class ControlBlockPart extends GeometricShapePart {
 					distanceX = nX - b22.getMinX();
 					distanceY = nY - b22.getMinY();
 
-					getContent().getTransform().translate(distanceX, distanceY);
-
-					refreshVisual();
-					relocateAnchorads(distanceX, distanceY);
+					transformBlock(distanceX, distanceY);
 				}
 
 				// relocateAnchorads(distanceX, distanceY);
@@ -357,6 +424,109 @@ public class ControlBlockPart extends GeometricShapePart {
 
 	}
 
+	private void transformBlock(double distanceX, double distanceY) {
+		getContent().getTransform().translate(distanceX, distanceY);
+		
+		refreshVisual();
+		relocateAnchorads(distanceX, distanceY);
+		
+	
+	
+	}
+
+	/**
+	 * Method for resizing a block 
+	 * Needs to be called directly from the part which should be resized
+	 * 
+	 * @param isOperand1
+	 * @param newHight
+	 * @param newWidth
+	 */
+	public void resizeBlock(boolean isOperand1, double newHight, double newWidth){
+	
+		CurvedPolygon newShape;
+		
+		if(getContent() instanceof ControlAndOrBlock){
+
+			if(isOperand1){
+			newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand1((CurvedPolygon)getContent().getGeometry(), newHight);
+			}else{
+				newShape = ControlShapeService.adjustControlAndOrBlockShapeOperand2((CurvedPolygon)getContent().getGeometry(), newHight);
+			}
+            getContent().setGeometry(newShape);
+			refreshVisual();
+			
+		}
+		else if(getContent() instanceof ControlIfBlockModel){
+			System.out.println("Method not implemented yet");
+		}
+		
+	}
+	
+	
+	public void resizeParentBlocks(boolean isOperand1, double newHight, double newWidth){
+		
+		//Check if parent block exists which should be resized
+		if(getContent().getParentBlock()!= null){
+
+			Set<IVisualPart<? extends Node>> anchorages = getAnchoragesUnmodifiable().keySet();
+			for (IVisualPart<? extends Node> p : anchorages) {
+				if (p instanceof ControlBlockPart) {
+					if (((AbstractGeometricElementPart<?>) p).getContent().equals(getContent().getParentBlock())) {
+						((ControlBlockPart) p).resizeBlock(isOperand1, newHight, newWidth);
+						List<IContentPart<? extends Node>> linked = new ArrayList<IContentPart<? extends Node>>();
+						refreshAnchoredsRecursive(linked, (IContentPart<? extends Node>) p);
+						((ControlBlockPart) p).resizeParentBlocks(isOperand1, newHight, newWidth);
+						
+					}
+				}
+			}
+			
+			
+		}
+		
+		
+	}
+	
+	public List<IContentPart<? extends Node>> refreshAnchoredsRecursive(List<IContentPart<? extends Node>> linked,
+			IContentPart<? extends Node> parent) {
+		@SuppressWarnings("unchecked")
+		// List<IContentPart<? extends Node>> anch =
+		// PartUtils.filterParts(PartUtils.getAnchoreds(parent, "link"),
+		// IContentPart.class);
+		//
+		List<IContentPart<? extends Node>> anch = PartUtils.filterParts(parent.getAnchoredsUnmodifiable(),
+				IContentPart.class);
+
+		for (IContentPart<? extends Node> node : anch) {
+			if (!(linked.contains(node))) {
+				linked.add(node);
+
+				if (node instanceof GeometricShapePart) {
+					((GeometricShapePart) node).doAttachToAnchorageVisual(parent, "relink");
+				}
+				if (node instanceof AbstractNodePart) {
+					if(node instanceof TextPart){
+						if(!((TextPart) node).getContent().getTextType().equals(TextType.AND_OR_CONTROL)){
+							((AbstractNodePart<? extends Node>) node).doAttachToAnchorageVisual(parent, "relink");	
+						}
+						
+					}else{
+					((AbstractNodePart<? extends Node>) node).doAttachToAnchorageVisual(parent, "relink");
+					}
+				}
+				if (!(node.getAnchoredsUnmodifiable().isEmpty())) {
+					linked = getAnchoredsRecursive(linked, node);
+				}
+
+			}
+		}
+
+		return linked;
+
+	}
+	
+	
 	public void resizeParentControlBlock(int heightdifference){
         int oldH = (int) getContent().getGeometry().getBounds().getHeight();
 		
