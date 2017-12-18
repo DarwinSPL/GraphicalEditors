@@ -4,6 +4,7 @@ import org.eclipse.gef.geometry.planar.AffineTransform;
 import org.eclipse.gef.geometry.planar.IShape;
 
 import editor.model.GeometricShape;
+import editor.model.operator.OperatorAndBlockModel.OperatorAndORType;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Bounds;
@@ -31,21 +32,21 @@ public class ControlAndOrBlock extends ControlBlockModel{
 	private final ObjectProperty<ControlBlockModel> controlBlockOperand2 = new SimpleObjectProperty<>(this,
 			CONTROL_BLOCK_OPERAND2);
 	
-	public enum ControlAndORType {
-		AND, OR
-	}
-	
-	private ControlAndORType type;
+//	public enum ControlAndORType {
+//		AND, OR
+//	}
+//	
+	private OperatorAndORType type;
 
-	public ControlAndORType getType() {
+	public OperatorAndORType getType() {
 		return type;
 	}
 
-	public void setType(ControlAndORType type) {
+	public void setType(OperatorAndORType type) {
 		this.type = type;
 	}
 
-	public ControlAndOrBlock(IShape shape, AffineTransform transform, Paint fill, Effect effect, ControlAndORType type) {
+	public ControlAndOrBlock(IShape shape, AffineTransform transform, Paint fill, Effect effect, OperatorAndORType type) {
 		super(shape, transform, fill, effect);
 		setType(type);
 		

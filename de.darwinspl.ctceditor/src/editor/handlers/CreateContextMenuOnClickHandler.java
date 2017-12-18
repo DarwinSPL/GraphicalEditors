@@ -27,6 +27,7 @@ import editor.model.arithmetical.ArithmeticalOperationOperatorBlockModel;
 import editor.model.arithmetical.ArithmeticalOperationOperatorBlockModel.ArithmeticalOperatorType;
 import editor.model.arithmetical.MinMaxObjectReferenceBlockModel;
 import editor.model.arithmetical.MinMaxObjectReferenceBlockModel.MinMaxType;
+import editor.model.control.ControlAndOrBlock;
 import editor.model.control.ControlBlockModel;
 import editor.model.operator.OperatorAndBlockModel;
 import editor.model.operator.OperatorAndBlockModel.OperatorAndORType;
@@ -226,6 +227,8 @@ public class CreateContextMenuOnClickHandler extends AbstractHandler implements 
 		@Override
 		public void handle(ActionEvent event) {
 
+			if(getTargetBlock() instanceof OperatorAndBlockPart){
+			
 			OperatorAndBlockModel target = ((OperatorAndBlockPart) getTargetBlock()).getContent();
 
 			String text = ((MenuItem) event.getTarget()).getText();
@@ -242,11 +245,39 @@ public class CreateContextMenuOnClickHandler extends AbstractHandler implements 
 			default:
 				break;
 			}
+			
+			}
+			
+			if(getTargetBlock() instanceof ControlBlockPart){
+				
+				ControlAndOrBlock target = (ControlAndOrBlock) ((ControlBlockPart) getTargetBlock()).getContent();
+
+				String text = ((MenuItem) event.getTarget()).getText();
+				target.getFixedChildTextModel().setText(text);
+
+				switch (text) {
+				case "And":
+					target.setType(OperatorAndORType.AND);
+					break;
+
+				case "Or":
+					target.setType(OperatorAndORType.OR);
+					break;
+				default:
+					break;
+				}
+				
+				}
+			
+			
 
 			getTargetBlock().refreshVisual();
 			for (IVisualPart<? extends Node> anchored : getTargetBlock().getAnchoredsUnmodifiable()) {
 				anchored.refreshVisual();
 			}
+			
+			
+			
 		}
 	};
 
@@ -298,12 +329,19 @@ public class CreateContextMenuOnClickHandler extends AbstractHandler implements 
 					}
 					if(((OperatorMovableBlockPart) targetBlock).getContent() instanceof OperatorNumercialComparisonBlockModel){
 
+						
 						OperatorNumercialComparisonBlockModel model = ((OperatorNumercialComparisonBlockModel) ((OperatorMovableBlockPart) targetBlock)
 								.getContent());
 
 						contextMenu.getItems().add(
 								createMenuForTypeChange(OperatorComparisonValueType.NUMBER, model.getComparisonType()));
 					}
+				}
+				
+				if(targetBlock instanceof ControlBlockPart && ((ControlBlockPart) targetBlock).getContent() instanceof ControlAndOrBlock){
+					ControlAndOrBlock controlBlock = (ControlAndOrBlock) ((GeometricShapePart) targetBlock).getContent();
+					
+					contextMenu.getItems().add(createMenuForAndOrChange(controlBlock.getType()));
 				}
 
 				if (targetBlock instanceof ArithmeticalOperatorMovableBlockPart) {
@@ -471,6 +509,8 @@ public class CreateContextMenuOnClickHandler extends AbstractHandler implements 
 
 		return menu;
 	}
+	
+	
 
 	private Menu createMenuForMinMaxChange(MinMaxType minMaxType) {
 

@@ -137,7 +137,7 @@ public class GraphicalEditorModule extends MvcFxModule {
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ContentRestrictedChangeViewportPolicy.class);
 	}
 
-	protected void bindDeleteHandlePartAdapters(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
+	protected void bindContextMenuHandlePartAdapters(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(CreateContextMenuOnClickHandler.class);
 	}
 
@@ -831,7 +831,7 @@ public class GraphicalEditorModule extends MvcFxModule {
 				AdapterMaps.getAdapterMapBinder(binder(), RectangleSegmentHandlePart.class));
 
 		// hover handles
-		bindDeleteHandlePartAdapters(
+		bindContextMenuHandlePartAdapters(
 				AdapterMaps.getAdapterMapBinder(binder(), BlockContextViewHandlePart.class));
 		// hover handles
 //				bindDeleteHandlePartAdapters(

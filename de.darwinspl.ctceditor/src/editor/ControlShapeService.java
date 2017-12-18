@@ -45,29 +45,55 @@ public class ControlShapeService {
 		return createControlAndOrBlockShape(150, 60, 10, 45, 50, 30);
 		
 	}
+
 	
 	/**
 	 * Method for adjusting the shape of a ControlAndOrBlock according to an added first operand
 	 * 
 	 * 
 	 * @param currentShape current shape of he controlAndOrBlock
-	 * @param newHight Hight of the added operand
+	 * @param newHeight Hight of the added operand
 	 * @return the new shape
 	 */
-	public static CurvedPolygon adjustControlAndOrBlockShapeOperand1(CurvedPolygon currentShape, double newHight ){
+	public static CurvedPolygon adjustControlAndOrBlockShapeOperand1(CurvedPolygon currentShape, double newHeight ){
 		BezierCurve[] bezier = currentShape.getOutlineSegments();
-		newHight = newHight +2;
+		newHeight = newHeight +2;
 		double currentHight = bezier[8].getY1() - bezier[8].getY2();
-		double difference = newHight - currentHight;
+		double difference = newHeight - currentHight;
 		bezier[0] = new Line(0, bezier[0].getY1()-difference, bezier[0].getX2(), bezier[0].getY2());
 		double startY = bezier[7].getY2();
 		double startX = bezier[7].getX2();
-		bezier[8] = new Line(startX, startY, startX, startY - newHight);
-		bezier[9] = new Line(startX, startY - newHight, bezier[10].getX2(), startY-newHight);
-		bezier[10] = new Line(bezier[10].getX2(), startY-newHight, bezier[10].getX2(), bezier[10].getY2()- difference);
+		bezier[8] = new Line(startX, startY, startX, startY - newHeight);
+		bezier[9] = new Line(startX, startY - newHeight, bezier[10].getX2(), startY-newHeight);
+		bezier[10] = new Line(bezier[10].getX2(), startY-newHeight, bezier[10].getX2(), bezier[10].getY2()- difference);
 		bezier[11] = new Line(bezier[10].getX2(), bezier[10].getY2(), 0, bezier[10].getY2());
 		return new CurvedPolygon(bezier);
 	
+	}
+	
+	
+	/**
+	 * 
+	 * Method for adjusting the height of an given Control Block Shape according to a given child Block height
+	 * 
+	 * @param currentShape
+	 * @param newHeight
+	 * @return
+	 */
+	public static CurvedPolygon adjustControlIfBlockShapeHight(CurvedPolygon currentShape, double newHeight){
+		BezierCurve[] bezier = currentShape.getOutlineSegments();
+		
+		newHeight = newHeight+2;
+		double currentHight = bezier[4].getY1() - bezier[4].getY2();
+		double  difference = newHeight-currentHight;
+		
+		bezier[0] = new Line(bezier[0].getX1(), bezier[0].getY1(), bezier[0].getX2(), bezier[0].getY2()+difference);
+		bezier[1] = new Line(bezier[0].getX2(), bezier[0].getY2(), bezier[1].getX2(), bezier[0].getY2());
+		bezier[2] = new Line(bezier[1].getX2(), bezier[1].getY2(), bezier[2].getX2(), bezier[2].getY2()+ difference);
+		bezier[3] = new Line(bezier[2].getX2(), bezier[2].getY2(), bezier[3].getX2(), bezier[2].getY2());
+		bezier[4] = new Line(bezier[3].getX2(), bezier[3].getY2(), bezier[3].getX2(), bezier[4].getY2());
+		return new CurvedPolygon(bezier);
+		
 	}
 	
 	/**
@@ -92,6 +118,8 @@ public class ControlShapeService {
 		return new CurvedPolygon(bezier);
 	
 	}
+	
+	
 	/**	
 	 *   _____
 	 *  |  ___|
@@ -155,20 +183,20 @@ public class ControlShapeService {
         return new CurvedPolygon(segments);
 	}
 
-	public static CurvedPolygon sizeControlBlockShape(int numberOfChildBlocks) {
-		List<BezierCurve> segments = new ArrayList<>();
-		int bla = (numberOfChildBlocks - 1) * 30;
-		segments.add(new Line(0, 0, 0, (90 + bla)));
-		segments.add(new Line(0, (90 + bla), 200, 90 + bla));
-		segments.add(new Line(200, 90 + bla, 200, 60 + bla));
-		segments.add(new Line(200, 60 + bla, 25, 60 + bla));
-		segments.add(new Line(25, 60 + bla, 25, 30));
-		segments.add(new Line(25, 30, 200, 30));
-		segments.add(new Line(200, 30, 200, 0));
-		segments.add(new Line(200, 0, 0, 0));
-
-		return new CurvedPolygon(segments);
-	}
+//	public static CurvedPolygon sizeControlBlockShape(int numberOfChildBlocks) {
+//		List<BezierCurve> segments = new ArrayList<>();
+//		int bla = (numberOfChildBlocks - 1) * 30;
+//		segments.add(new Line(0, 0, 0, (90 + bla)));
+//		segments.add(new Line(0, (90 + bla), 200, 90 + bla));
+//		segments.add(new Line(200, 90 + bla, 200, 60 + bla));
+//		segments.add(new Line(200, 60 + bla, 25, 60 + bla));
+//		segments.add(new Line(25, 60 + bla, 25, 30));
+//		segments.add(new Line(25, 30, 200, 30));
+//		segments.add(new Line(200, 30, 200, 0));
+//		segments.add(new Line(200, 0, 0, 0));
+//
+//		return new CurvedPolygon(segments);
+//	}
 
 	public static CurvedPolygon createControlIfBlockShape(int numberOfChildBlocks, int width) {
 		int height = 90 + ((numberOfChildBlocks - 1) * 30);

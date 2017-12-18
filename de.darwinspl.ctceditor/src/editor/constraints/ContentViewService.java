@@ -30,6 +30,9 @@ import editor.model.choiceboxes.ChoiceBoxModel.ChoiceBoxType;
 import editor.model.choiceboxes.ChoiceBoxValueModel;
 import editor.model.context.TextFieldModel;
 import editor.model.control.ControlValidateOperatorBlockModel.ControlValidateOperatorBlockType;
+import editor.model.control.ControlAndOrBlock;
+import editor.model.control.ControlBlockModel;
+import editor.model.control.ControlBlockModel.ControlBlockOperandType;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;
@@ -104,6 +107,7 @@ public class ContentViewService {
 	private static final ObjectProperty<HyContextModel> contextModelProperty = new SimpleObjectProperty<HyContextModel>();
 	
 
+	private static boolean isOperand1;
 	
 	
 /**
@@ -135,6 +139,38 @@ public static List<AbstractBlockElement> createContentViewerContentFromConstrain
 		}
 		else{
 			if(constraint.getRootExpression()!= null){
+				
+		if((rootExpression instanceof HyAndExpression || rootExpression instanceof HyOrExpression)){
+			HyBinaryExpression binaryExpression = (HyBinaryExpression) rootExpression;
+			
+			final ControlAndOrBlock controlBlock = new ControlAndOrBlock(ControlShapeService.createCustomControlAndOrBlockShape(), new AffineTransform(1, 0, 0, 1, 1, 1), Color.YELLOW, null, OperatorAndORType.AND);
+			final TextModel text = new TextModel("AND", new AffineTransform(1,0,0,1,1,1), TextType.AND_OR_CONTROL);
+			
+			if(rootExpression instanceof HyOrExpression){
+				controlBlock.setType(OperatorAndORType.OR);
+				text.setText("OR");
+			}
+			
+			if(constraint.getValidSince()!=null){
+				controlBlock.setValidSince(constraint.getValidSince());
+			}
+			if(constraint.getValidUntil()!=null){
+				controlBlock.setValidUntil(constraint.getValidUntil());
+			}
+			
+			
+			text.setParentBlock(controlBlock);
+			visualParts.add(controlBlock);
+			visualParts.add(text);
+			
+			isOperand1=true;
+			visualParts.addAll(resolveHyExpression(binaryExpression.getOperand1(), controlBlock));
+			isOperand1=false;
+			visualParts.addAll(resolveHyExpression(binaryExpression.getOperand2(), controlBlock));
+			
+		
+		} else{		
+				
 		final ControlValidateOperatorBlockModel controlBlockModel = new ControlValidateOperatorBlockModel(
 				ControlShapeService.createCustomControlValidateOperatorShape(30, 200), new AffineTransform(1, 0, 0, 1, 1, 1), Color.YELLOW,
 				null, ControlValidateOperatorBlockType.VALIDATE);
@@ -156,7 +192,7 @@ public static List<AbstractBlockElement> createContentViewerContentFromConstrain
 		visualParts.add(controlBlockModel);
 		visualParts.add(fixedOperatorModel);
 		visualParts.addAll(resolveHyExpression(rootExpression, fixedOperatorModel));
-		
+		}
 		}
 		}
 
@@ -169,6 +205,9 @@ public static List<AbstractBlockElement> createContentViewerContentFromConstrain
 	
 	
 }
+
+
+
 
 private static List<? extends AbstractBlockElement> resolveHyExpression(HyExpression expression, GeometricShape parent){
 	List<AbstractBlockElement> visualParts = new ArrayList<>();
@@ -334,6 +373,10 @@ else if (expression instanceof HyMultiplicationExpression){
 	return resolveComparisonExpression2((OperatorFixedBlockModel) parent, OperatorComparisonType.NOT_EQUALS, "!=", expression);
 	
 } else if(expression instanceof HyOrExpression){
+	//TODO: Speichern von rekursiven AND/OR Control Blocks
+//	if(expression instanceof HyImpliesExpression || expression instanceof HyEquivalenceExpression || expression instanceof Hy){
+//	
+	
 	return resolveAndOrExpression((OperatorFixedBlockModel) parent, expression);
 }
 else if (expression instanceof HySubtractionExpression){
@@ -509,6 +552,35 @@ private static Collection<? extends AbstractBlockElement> resolveArithmeticOpera
 
 private static List<? extends AbstractBlockElement> resolveHyAtomicExpression(HyAtomicExpression expression, GeometricShape parent) {
 	
+	if(parent instanceof ControlAndOrBlock){
+		List<AbstractBlockElement> visualParts = new ArrayList<AbstractBlockElement>();
+
+		final ControlValidateOperatorBlockModel controlBlockModel = new ControlValidateOperatorBlockModel(
+				ControlShapeService.createCustomControlValidateOperatorShape(30, 200), new AffineTransform(1, 0, 0, 1, 1, 1), Color.YELLOW,
+				null, ControlValidateOperatorBlockType.VALIDATE);
+
+		final OperatorFixedBlockModel fixedOperatorModel = new OperatorFixedBlockModel(
+				OperatorShapeService.createOperatorShapeCustomLength(160),
+				OperatorShapeService.createDefaultAffineTransformForPalette(), Color.GREEN, null,
+				OperatorFixedBlockType.VALIDATE_OPERATOR);
+
+		if(parent instanceof ControlAndOrBlock){
+			if(isOperand1){
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND2);
+			}
+		}
+		
+        controlBlockModel.setParentBlock(parent);
+        
+        fixedOperatorModel.setParentBlock(controlBlockModel);
+		
+		visualParts.add(controlBlockModel);
+	    visualParts.add(fixedOperatorModel);
+		visualParts.addAll(resolveHyAtomicExpression(expression, fixedOperatorModel));
+		return visualParts;
+	}
 	
 	 if (expression instanceof HyFeatureReferenceExpression){
 		return resolveFeatureReferenceExpression((OperatorFixedBlockModel) parent,(HyFeatureReferenceExpression) expression);
@@ -602,6 +674,17 @@ private static List<? extends AbstractBlockElement> resolveImpliesOrEquivalenceE
 	fixesOperatorBlock.setParentBlock(controlBlock);
 	
 	if(parentBlock != null){
+		
+		
+		if(parentBlock instanceof ControlAndOrBlock){
+			if(isOperand1==true){
+			controlBlock.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlock.setOperandType(ControlBlockOperandType.OPERAND2);
+				
+			}
+		}
+		
 		controlBlock.setParentBlock(parentBlock);
 	}else{
 		if(validSince!=null){
@@ -893,7 +976,18 @@ private static List<? extends AbstractBlockElement> resolveImpliesOperand2(HyExp
 		
 		fixedOperatorModel.setParentBlock(controlBlockModel);
 
+		
+		
+		if(parentBlock instanceof ControlAndOrBlock){
+			if(isOperand1 == true){
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND2);
+			}
+		}
+		
 		controlBlockModel.setParentBlock(parentBlock);
+		
 		visualParts.add(controlBlockModel);
 	    visualParts.add(fixedOperatorModel);
 		visualParts.addAll(resolveFeatureReferenceExpression(fixedOperatorModel, (HyFeatureReferenceExpression) operand));
@@ -901,7 +995,18 @@ private static List<? extends AbstractBlockElement> resolveImpliesOperand2(HyExp
 	} else if (operand instanceof HyAndExpression || operand instanceof HyOrExpression){
 		fixedOperatorModel.setParentBlock(controlBlockModel);
 
+		
+		
+		if(parentBlock instanceof ControlAndOrBlock){
+			if(isOperand1 == true){
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND2);
+			}
+		}
+		
 		controlBlockModel.setParentBlock(parentBlock);
+		
 		visualParts.add(controlBlockModel);
 	    visualParts.add(fixedOperatorModel);
 		visualParts.addAll(resolveAndOrExpression(fixedOperatorModel, operand));
@@ -911,6 +1016,16 @@ private static List<? extends AbstractBlockElement> resolveImpliesOperand2(HyExp
 			|| (operand instanceof HyGreaterOrEqualExpression) ||(operand instanceof HyLessOrEqualExpression)){
 		fixedOperatorModel.setParentBlock(controlBlockModel);
 
+		
+		
+		if(parentBlock instanceof ControlAndOrBlock){
+			if(isOperand1 == true){
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND2);
+			}
+		}
+		
 		controlBlockModel.setParentBlock(parentBlock);
 		visualParts.add(controlBlockModel);
 	    visualParts.add(fixedOperatorModel);
@@ -923,7 +1038,17 @@ private static List<? extends AbstractBlockElement> resolveImpliesOperand2(HyExp
 		}else{
 		fixedOperatorModel.setParentBlock(controlBlockModel);
 
+		
+		
+		if(parentBlock instanceof ControlAndOrBlock){
+			if(isOperand1 == true){
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND1);
+			}else{
+				controlBlockModel.setOperandType(ControlBlockOperandType.OPERAND2);
+			}
+		}
 		controlBlockModel.setParentBlock(parentBlock);
+		
 		visualParts.add(controlBlockModel);
 	    visualParts.add(fixedOperatorModel);
 	

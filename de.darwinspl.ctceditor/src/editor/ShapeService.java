@@ -1,18 +1,12 @@
 package editor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.geometry.planar.AffineTransform;
-import org.eclipse.gef.geometry.planar.BezierCurve;
-import org.eclipse.gef.geometry.planar.CurvedPolygon;
-import org.eclipse.gef.geometry.planar.IShape;
-import org.eclipse.gef.geometry.planar.Line;
-import org.eclipse.gef.geometry.planar.PolyBezier;
 
 import editor.model.CreateNewContextButton;
 import editor.model.choiceboxes.ChoiceBoxFeatureModel;
@@ -20,11 +14,11 @@ import editor.model.choiceboxes.ChoiceBoxModel;
 import editor.model.choiceboxes.ChoiceBoxModel.ChoiceBoxType;
 import editor.model.control.ControlAndOrBlock;
 import editor.model.control.ControlIfBlockModel;
-import editor.model.control.ControlAndOrBlock.ControlAndORType;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel.ControlValidateOperatorBlockType;
 import editor.model.nodes.TextModel;
 import editor.model.nodes.TextModel.TextType;
+import editor.model.operator.OperatorAndBlockModel.OperatorAndORType;
 import editor.model.operator.OperatorFeatureIsSelectedModel;
 import editor.model.operator.OperatorFixedBlockModel;
 import editor.model.operator.OperatorFixedBlockModel.OperatorFixedBlockType;
@@ -105,7 +99,7 @@ public class ShapeService {
 
 		// Create Model for block elements
 		final ControlAndOrBlock controlBlock = new ControlAndOrBlock(ControlShapeService.createCustomControlAndOrBlockShape(),
-				new AffineTransform(1, 0, 0, 1, 23, 5), Color.YELLOW, null, ControlAndORType.AND);
+				new AffineTransform(1, 0, 0, 1, 23, 5), Color.YELLOW, null, OperatorAndORType.AND);
 	
 		final TextModel textModel = new TextModel("AND", new AffineTransform(1, 0, 0, 1, 30, 10), TextType.AND_OR_CONTROL);
 

@@ -36,13 +36,6 @@ public class CloneShapeSupport extends AbstractCloneContentSupport {
 			shape.setStrokeWidth(originalShape.getStrokeWidth());
 			return shape;
 		}
-//		if (originalShape instanceof ResponseBlockModel) {
-//			ResponseBlockModel shape = new ResponseBlockModel((IShape) originalShape.getGeometry().getCopy(),
-//					originalShape.getTransform().getCopy(), copyPaint(originalShape.getFill()),
-//					copyEffect(originalShape.getEffect()));
-//			shape.setStroke(copyPaint(originalShape.getStroke()));
-//			shape.setStrokeWidth(originalShape.getStrokeWidth());
-//			return shape;
 		 else {
 			GeometricShape shape = new GeometricShape((IShape) originalShape.getGeometry().getCopy(),
 					originalShape.getTransform().getCopy(), copyPaint(originalShape.getFill()),

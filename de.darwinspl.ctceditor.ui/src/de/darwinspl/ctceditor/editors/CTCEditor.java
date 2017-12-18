@@ -60,6 +60,8 @@ import editor.model.arithmetical.NumericalObjectReferenceOperator;
 import editor.model.choiceboxes.ChoiceBoxContextModel;
 import editor.model.choiceboxes.ChoiceBoxModel;
 import editor.model.choiceboxes.ChoiceBoxValueModel;
+import editor.model.control.ControlAndOrBlock;
+import editor.model.control.ControlBlockModel;
 import editor.model.control.ControlIfBlockModel;
 import editor.model.control.ControlIfBlockModel.ControlBlockType;
 import editor.model.control.ControlValidateOperatorBlockModel;
@@ -179,7 +181,7 @@ public class CTCEditor extends AbstractFXEditor {
 		if(contextModel == null){
 			contextModel = HyContextInformationFactory.eINSTANCE.createHyContextModel();
 			IPath containerFullPath = file.getFullPath().removeFileExtension();
-			containerFullPath.addFileExtension(HyContextInformationUtil.getContextModelFileExtensionForConcreteSyntax());
+			containerFullPath.addFileExtension(HyContextInformationUtil.getContextModelFileExtensionForXmi());
 			 
 			
 			EcoreIOUtil.saveModelAs(contextModel, ResourceUtil.getLocalFile(containerFullPath));
@@ -288,7 +290,7 @@ public class CTCEditor extends AbstractFXEditor {
 			contextModel = HyContextInformationFactory.eINSTANCE.createHyContextModel();
 			
 			IPath containerFullPath = file.getFullPath().removeFileExtension();
-			containerFullPath.addFileExtension(HyContextInformationUtil.getContextModelFileExtensionForConcreteSyntax());
+			containerFullPath.addFileExtension(HyContextInformationUtil.getContextModelFileExtensionForXmi());
 			 
 			
 			EcoreIOUtil.saveModelAs(contextModel, ResourceUtil.getLocalFile(containerFullPath));
@@ -390,7 +392,7 @@ public class CTCEditor extends AbstractFXEditor {
 							
 							constraint.setRootExpression(impliesExpression);
 							//if(controlIfBlockModel.getValidSince()!=null){
-								constraint.setValidSince(controlIfBlockModel.getValidSince());
+						    constraint.setValidSince(controlIfBlockModel.getValidSince());
 							
 							//}
 							//if(controlIfBlockModel.getValidUntil()!=null){
@@ -405,6 +407,39 @@ public class CTCEditor extends AbstractFXEditor {
 				
 				}
 			}
+			
+			if (content instanceof ControlAndOrBlock) {
+				if (((ControlAndOrBlock) content).getParentBlock() == null) {
+
+					
+					ControlAndOrBlock controlModel = (ControlAndOrBlock) content;
+					
+				
+					if(controlModel.getControlBlockOperand1() != null && controlModel.getControlBlockOperand2() != null){
+						HyBinaryExpression rootExpression = resolveControlAndOrExpression(controlModel);
+						
+						HyConstraint constraint = HyConstraintFactory.eINSTANCE.createHyConstraint();
+						
+						constraint.setRootExpression(rootExpression);
+						//if(controlIfBlockModel.getValidSince()!=null){
+					    constraint.setValidSince(controlModel.getValidSince());
+						
+						//}
+						//if(controlIfBlockModel.getValidUntil()!=null){
+							constraint.setValidUntil(controlModel.getValidUntil());
+						//}
+						
+						model.getConstraints().add(constraint);
+						
+					}
+					
+					
+					
+				
+				}
+			}
+			
+		
 			
 			if(content instanceof ControlValidateOperatorBlockModel){
 				if(((ControlValidateOperatorBlockModel) content).getParentBlock()== null){
@@ -449,6 +484,87 @@ public class CTCEditor extends AbstractFXEditor {
 
 	}
 	
+	
+	
+
+	private HyBinaryExpression resolveControlAndOrExpression(ControlAndOrBlock model){
+		HyBinaryExpression expression = createAndOrExpresssion(model.getType());
+		
+		if(model.getControlBlockOperand1()!=null){
+			HyExpression operand1 = resolveOperandOfControlAndOrExpression(model.getControlBlockOperand1());
+			
+			expression.setOperand1(operand1);
+			
+			if(model.getControlBlockOperand2()!=null){
+				HyExpression operand2 = resolveOperandOfControlAndOrExpression(model.getControlBlockOperand2());
+			
+				expression.setOperand2(operand2);
+				
+				return expression;
+			}
+			
+		}
+		
+		return null;
+
+	}
+	
+	
+	private HyExpression resolveControlValidateExpression(ControlValidateOperatorBlockModel model){
+		OperatorFixedBlockModel fixedModel = model.getFixedChildOperatorBlockModel();
+		
+	
+		if(fixedModel != null){
+			OperatorMovableBlockModel  operatorMovableChildBlock = fixedModel.getMovableChildBlock();
+			if(operatorMovableChildBlock != null){
+				HyExpression expression = resolveOperatorMovableBlock(operatorMovableChildBlock);
+				return expression;
+				
+			}
+			
+			
+		}
+		return null;
+		
+	}
+	
+	
+	private HyExpression resolveOperandOfControlAndOrExpression(ControlBlockModel model){
+
+		if(model instanceof ControlIfBlockModel){
+			return resolveHyImpliesOrEquivalenceExpression((ControlIfBlockModel) model);
+		}
+		else if(model instanceof ControlValidateOperatorBlockModel){
+			
+			return resolveControlValidateExpression((ControlValidateOperatorBlockModel) model);
+	
+		}
+		else if(model instanceof ControlAndOrBlock){
+			HyNestedExpression nestedExpression = HyExpressionFactory.eINSTANCE.createHyNestedExpression();
+			
+			
+			
+			nestedExpression.setOperand(resolveControlAndOrExpression((ControlAndOrBlock) model));
+			return nestedExpression;
+		}
+		
+		
+		return null;
+		
+		
+	}
+	
+	
+	private HyBinaryExpression createAndOrExpresssion(OperatorAndORType type ){
+		HyBinaryExpression rootExpression;
+		if(type.equals(OperatorAndORType.AND)){
+			rootExpression = HyExpressionFactory.eINSTANCE.createHyAndExpression();
+			
+		}else{
+			rootExpression = HyExpressionFactory.eINSTANCE.createHyOrExpression();
+		}
+		return rootExpression;
+	}
 	/**
 	 * 
 	 * 
