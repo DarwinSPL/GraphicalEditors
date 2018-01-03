@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.gef.common.adapt.AdapterKey;
+import org.eclipse.gef.fx.nodes.InfiniteCanvas;
 import org.eclipse.gef.geometry.planar.Dimension;
 import org.eclipse.gef.geometry.planar.Point;
 import org.eclipse.gef.mvc.fx.domain.IDomain;
@@ -27,6 +28,7 @@ import org.eclipse.gef.mvc.fx.models.SelectionModel;
 import org.eclipse.gef.mvc.fx.operations.DeselectOperation;
 import org.eclipse.gef.mvc.fx.parts.IContentPart;
 import org.eclipse.gef.mvc.fx.parts.IRootPart;
+import org.eclipse.gef.mvc.fx.parts.IVisualPart;
 import org.eclipse.gef.mvc.fx.parts.LayeredRootPart;
 import org.eclipse.gef.mvc.fx.parts.PartUtils;
 import org.eclipse.gef.mvc.fx.policies.CreationPolicy;
@@ -155,7 +157,10 @@ public class CreateShapeOnClickHandler extends AbstractHandler implements IOnDra
 		// find model part
 		IRootPart<? extends Node> contentRoot = getContentViewer().getRootPart();
 		// getContentViewer().getRootPart();
+		Node visual = contentRoot.getVisual();
 
+		InfiniteCanvas parent = (InfiniteCanvas) visual.getParent().getParent().getParent();
+		double width = parent.getWidth();
 		// copy the prototype
 		Object o = getHost().getContent();
 
@@ -165,7 +170,11 @@ public class CreateShapeOnClickHandler extends AbstractHandler implements IOnDra
 				.sceneToLocal(localToScene.getX(), localToScene.getY());
 		// initially move to the originInModel
 		double[] matrix = copy.getTransform().getMatrix();
-		copy.getTransform().setTransform(matrix[0], matrix[1], matrix[2], matrix[3], originInModel.getX(),
+//		copy.getTransform().setTransform(matrix[0], matrix[1], matrix[2], matrix[3], originInModel.getX(),
+//				originInModel.getY());
+		//TODO: Die position sollte lieber so bestimmt werden: originInModel.getX() + width of Palette
+		
+		copy.getTransform().setTransform(matrix[0], matrix[1], matrix[2], matrix[3], originInModel.getX() + width,
 				originInModel.getY());
 
 		List<IContentPart<? extends Node>> linked = new ArrayList<>();

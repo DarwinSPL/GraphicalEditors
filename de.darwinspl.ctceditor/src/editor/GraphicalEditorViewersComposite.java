@@ -11,17 +11,22 @@
  *******************************************************************************/
 package editor;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.gef.fx.nodes.InfiniteCanvas;
+import org.eclipse.gef.mvc.fx.domain.HistoricizingDomain;
 import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import org.eclipse.gef.mvc.fx.viewer.InfiniteCanvasViewer;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -29,7 +34,7 @@ import javafx.scene.paint.Color;
 
 public class GraphicalEditorViewersComposite {
 
-	public VBox getRootVBox() {
+	public BorderPane getRootVBox() {
 		return rootVBox;
 	}
 
@@ -37,11 +42,11 @@ public class GraphicalEditorViewersComposite {
 
 	private final VBox compositeVbox;
 
-	private final VBox rootVBox;
+	private final BorderPane rootVBox;
 
 	public GraphicalEditorViewersComposite(IViewer contentViewer, IViewer paletteViewer, IViewer paletteViewerFeatures,
 			IViewer paletteViewerContexts, IViewer paletteViewerOperators, IViewer paletteViewerArithmetics,
-			IViewer evolutionViewer) {
+			IViewer evolutionViewer, HistoricizingDomain domain) {
 		// determine viewers' root nodes
 
 		Parent contentRootNode = contentViewer.getCanvas();
@@ -57,7 +62,6 @@ public class GraphicalEditorViewersComposite {
 		viewersPane.getChildren().addAll(contentRootNode);
 
 		AnchorPane palettePane = new AnchorPane();
-
 		palettePane.getChildren().addAll(paletteRootNode, paletteRootNodeOperators, paletteRootNodeArithmetics,
 				paletteRootNodeFeatures, paletteRootNodeContexts);
 
@@ -69,7 +73,6 @@ public class GraphicalEditorViewersComposite {
 
 		HBox buttonHbox = new HBox();
 		VBox buttonVboxRightSide = new VBox();
-		// VBox buttonVboxLeftSide = new VBox();
 		
 		
 		Button rootButton = new Button("Root");
@@ -146,14 +149,18 @@ public class GraphicalEditorViewersComposite {
 		// no spacing between viewers and palette indicator
 		composite.setSpacing(0d);
 
-		rootVBox = new VBox();
+		rootVBox = new BorderPane();
 		rootVBox.setStyle("-fx-background-color: transparent;");
-		rootVBox.getChildren().addAll(composite, evolutionPane);
+//		rootVBox.setTop(createButtonBar(domain));
+    	rootVBox.setCenter(viewersPane);
+		rootVBox.setBottom(evolutionPane);
+		rootVBox.setLeft(compositeVbox);
+//		rootVBox.getChildren().addAll(composite, evolutionPane);
 		rootVBox.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-		rootVBox.setFillWidth(true);
-		rootVBox.setSpacing(0d);
-		VBox.setVgrow(composite, Priority.ALWAYS);
-		VBox.setVgrow(evolutionPane, Priority.NEVER);
+//		rootVBox.setFillWidth(true);
+//		rootVBox.setSpacing(0d);
+//		VBox.setVgrow(composite, Priority.ALWAYS);
+//		VBox.setVgrow(evolutionPane, Priority.NEVER);
 
 
 
@@ -163,30 +170,37 @@ public class GraphicalEditorViewersComposite {
 		
 		
 
-		viewersPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+//		viewersPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 		// palettePane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
 		AnchorPane.setBottomAnchor(contentRootNode, 0d);
-		AnchorPane.setLeftAnchor(contentRootNode, 0d);
+//		AnchorPane.setLeftAnchor(contentRootNode, 0d);
 		AnchorPane.setRightAnchor(contentRootNode, 0d);
 		AnchorPane.setTopAnchor(contentRootNode, 0d);
 		AnchorPane.setBottomAnchor(paletteRootNode, 0d);
 		AnchorPane.setLeftAnchor(paletteRootNode, 0d);
 		AnchorPane.setTopAnchor(paletteRootNode, 0d);
+		paletteRootNode.prefWidthProperty().bind(palettePane.widthProperty());
+		
 		AnchorPane.setBottomAnchor(paletteRootNodeFeatures, 0d);
 		AnchorPane.setLeftAnchor(paletteRootNodeFeatures, 0d);
 		AnchorPane.setTopAnchor(paletteRootNodeFeatures, 0d);
+		paletteRootNodeFeatures.prefWidthProperty().bind(palettePane.widthProperty());
+		
 		AnchorPane.setBottomAnchor(paletteRootNodeContexts, 0d);
 		AnchorPane.setLeftAnchor(paletteRootNodeContexts, 0d);
 		AnchorPane.setTopAnchor(paletteRootNodeContexts, 0d);
+//		paletteRootNodeContexts.prefWidthProperty().bind(palettePane.widthProperty());
 
 		AnchorPane.setBottomAnchor(paletteRootNodeOperators, 0d);
 		AnchorPane.setLeftAnchor(paletteRootNodeOperators, 0d);
 		AnchorPane.setTopAnchor(paletteRootNodeOperators, 0d);
+		paletteRootNodeOperators.prefWidthProperty().bind(palettePane.widthProperty());
 
 		AnchorPane.setBottomAnchor(paletteRootNodeArithmetics, 0d);
 		AnchorPane.setLeftAnchor(paletteRootNodeArithmetics, 0d);
 		AnchorPane.setTopAnchor(paletteRootNodeArithmetics, 0d);
+		paletteRootNodeArithmetics.prefWidthProperty().bind(palettePane.widthProperty());
 
 		AnchorPane.setBottomAnchor(evolutionRootNode, 0d);
 		AnchorPane.setLeftAnchor(evolutionRootNode, 0d);
@@ -309,5 +323,47 @@ public class GraphicalEditorViewersComposite {
 	public Parent getVBoxComposite() {
 		return compositeVbox;
 	}
+	
+//	/**
+//	 * Creates the undo/redo buttons
+//	 *
+//	 * @return
+//	 */
+//	private Node createButtonBar(HistoricizingDomain domain) {
+//		Button undoButton = new Button("Undo");
+//		undoButton.setDisable(true);
+//		undoButton.setOnAction((e) -> {
+//			try {
+//				domain.getOperationHistory().undo(domain.getUndoContext(), null, null);
+//			} catch (ExecutionException e1) {
+//				e1.printStackTrace();
+//			}
+//		});
+//
+//		Button redoButton = new Button("Redo");
+//		redoButton.setDisable(true);
+//		redoButton.setOnAction((e) -> {
+//			try {
+//				domain.getOperationHistory().redo(domain.getUndoContext(), null, null);
+//			} catch (ExecutionException e1) {
+//				e1.printStackTrace();
+//			}
+//		});
+//
+//		// add listener to the operation history of our domain
+//		// to enable/disable undo/redo buttons as needed
+//		domain.getOperationHistory().addOperationHistoryListener((e) -> {
+//			IUndoContext ctx = domain.getUndoContext();
+//			undoButton.setDisable(!e.getHistory().canUndo(ctx));
+//			redoButton.setDisable(!e.getHistory().canRedo(ctx));
+//		});
+//
+//		return new HBox(10, undoButton, redoButton);
+//	}
+	
+	
+	
+	
+
 
 }

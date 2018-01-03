@@ -1,0 +1,20 @@
+.button{
+    -fx-border-color: orange;
+    -fx-border-width: 2;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-font-family:"Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-font-size: 1em; /* 12 */
+    -fx-text-fill: #828282;
+}
+
+
+.button:focused {
+    -fx-background-color: orange;
+    -fx-text-fill: black;
+}
+
+.button:pressed {
+    -fx-background-color: orange;
+    -fx-text-fill: black;
+}

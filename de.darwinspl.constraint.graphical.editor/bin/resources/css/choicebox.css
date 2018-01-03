@@ -1,0 +1,11 @@
+// Background color of the control itself
+.choice-box {
+  -fx-background-color: #63b4cf;
+  //-fx-mark-color: orange; // arrow color
+}
+
+// Selected item text color on the control itself
+.choice-box > .label { -fx-text-fill: white;
+-fx-font-size:xx-small;
+
+ }

@@ -13,6 +13,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.common.adapt.AdapterKey;
 import org.eclipse.gef.geometry.planar.IGeometry;
+import org.eclipse.gef.mvc.fx.domain.HistoricizingDomain;
+import org.eclipse.gef.mvc.fx.domain.IDomain;
 import org.eclipse.gef.mvc.fx.models.FocusModel;
 import org.eclipse.gef.mvc.fx.models.HoverModel;
 import org.eclipse.gef.mvc.fx.models.SelectionModel;
@@ -33,6 +35,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.util.Modules;
 
 import de.christophseidl.util.eclipse.ResourceUtil;
@@ -124,6 +127,9 @@ import javafx.scene.Scene;
 public class CTCEditor extends AbstractFXEditor {
 
 
+//	@Inject
+//	private HistoricizingDomain domain;
+
 	private ZoomActionGroup zoomActionGroup;
 	private ScrollActionGroup scrollActionGroup;
 	private FitToViewportLockAction fitToViewportLockAction;
@@ -132,11 +138,23 @@ public class CTCEditor extends AbstractFXEditor {
 	public CTCEditor() {
 		super(Guice.createInjector(Modules.override(new GraphicalEditorModule())
 				.with(new CTCEditorUiModule())));
+		
 
 
 		
 		
 	}
+	
+//	@Override
+//	public HistoricizingDomain getDomain() {
+//		
+//		return domain;
+//	}
+//	
+//	@Override
+//	protected void activate() {
+//		domain.activate();
+//	}
 	
 	
 	public boolean needToRefreshFeatureModel = false;
@@ -1232,7 +1250,7 @@ public class CTCEditor extends AbstractFXEditor {
 	protected void hookViewers() {
 		// build viewers composite		
 		GraphicalEditorViewersComposite viewersComposite = new GraphicalEditorViewersComposite(
-				getContentViewer(), getPaletteViewer(), getPaletteViewerFeatures(), getPaletteViewerContexts(), getPaletteViewerOperators(), getPaletteViewerArithmetics(), getEvolutionViewer());
+				getContentViewer(), getPaletteViewer(), getPaletteViewerFeatures(), getPaletteViewerContexts(), getPaletteViewerOperators(), getPaletteViewerArithmetics(), getEvolutionViewer(), (HistoricizingDomain) getDomain());
 		// create scene and populate canvas
 		getCanvas().setScene(new Scene(viewersComposite.getRootVBox()));
 	}

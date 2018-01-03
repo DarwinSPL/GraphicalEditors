@@ -1,0 +1,48 @@
+package editor.model.arithmetical;
+
+import org.eclipse.gef.geometry.planar.AffineTransform;
+import org.eclipse.gef.geometry.planar.IShape;
+
+import editor.model.context.TextFieldModel;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.effect.Effect;
+import javafx.scene.paint.Paint;
+
+public class ArithmeticalTextFielOperatorBlockModel extends ArithmeticalOperatorMovableBlock {
+
+	public ArithmeticalTextFielOperatorBlockModel(IShape shape, AffineTransform transform, Paint fill, Effect effect) {
+		super(shape, transform, fill, effect);
+
+	}
+
+	public final static String TEXTFIELD_CHILD_PROPERTY = "textfield_child_property";
+
+	private final ObjectProperty<TextFieldModel> textFieldChildProperty = new SimpleObjectProperty<TextFieldModel>(this,
+			TEXTFIELD_CHILD_PROPERTY);
+
+	public ObjectProperty<TextFieldModel> getTextFieldChildProperty() {
+		return textFieldChildProperty;
+	}
+
+	public TextFieldModel getTextFieldModel() {
+		return textFieldChildProperty.get();
+	}
+
+	public void setTextFieldModel(TextFieldModel textFieldModel) {
+		textFieldChildProperty.set(textFieldModel);
+	}
+
+	public void removeTextFieldModel() {
+		textFieldChildProperty.set(null);
+	}
+
+	@Override
+	public ArithmeticalTextFielOperatorBlockModel getCopy() {
+
+		ArithmeticalTextFielOperatorBlockModel copy = new ArithmeticalTextFielOperatorBlockModel(
+				(IShape) getGeometry().getCopy(), (AffineTransform) getTransform().getCopy(), getFill(), getEffect());
+		return copy;
+	}
+
+}

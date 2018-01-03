@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.gef.common.adapt.AdapterKey;
+import org.eclipse.gef.mvc.fx.domain.HistoricizingDomain;
 import org.eclipse.gef.mvc.fx.domain.IDomain;
 import org.eclipse.gef.mvc.fx.viewer.IViewer;
 
@@ -17,12 +20,15 @@ import eu.hyvar.context.HyContextModel;
 import eu.hyvar.feature.HyFeature;
 import eu.hyvar.feature.HyFeatureModel;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class GraphicalEditor extends Application {
 
-	private IDomain domain;
+	private HistoricizingDomain domain;
 
 	private Stage primaryStage;
 
@@ -43,7 +49,7 @@ public class GraphicalEditor extends Application {
 
 		getPrimaryStage().setScene(new Scene(new GraphicalEditorViewersComposite(getContentViewer(), getPaletteViewer(),
 				getPaletteViewerFeatures(), getPaletteViewerContexts(), getPaletteViewerOperators(),
-				getPaletteViewerArithmetics(), getEvolutionViewer()).getRootVBox()));
+				getPaletteViewerArithmetics(), getEvolutionViewer(), domain).getRootVBox()));
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class GraphicalEditor extends Application {
 		this.primaryStage = primaryStage;
 
 		// create domain using guice
-		this.domain = Guice.createInjector(createModule()).getInstance(IDomain.class);
+		this.domain = Guice.createInjector(createModule()).getInstance(HistoricizingDomain.class);
 
 		// create viewers
 		hookViewers();
@@ -133,5 +139,7 @@ public class GraphicalEditor extends Application {
 		return visualParts;
 
 	}
+	
+	
 
 }

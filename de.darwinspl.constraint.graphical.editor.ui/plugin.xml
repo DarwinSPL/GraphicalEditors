@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="Sample CTC Editor"
+            extensions="hyconstraint"
+            icon="icons/icon_constraints.png"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="de.darwinspl.ctceditor.editors.CTCEditor"
+            id="de.darwinspl.ctceditor.editors.CTCEditor">
+         <contentTypeBinding
+               contentTypeId="eu.hyvar.feature.constraint.resource.hyconstraint">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="de.darwinspl.wizards"
+            class="de.darwinspl.ctceditor.wizards.NewConstraintModelWizard"
+            icon="icons/icon_constraints.png"
+            id="de.darwinspl.ctceditor.new_cm_wizard"
+            name="DarwinSPL Constraint Model">
+      </wizard>
+   </extension>
+   
+   
+
+</plugin>
