@@ -6,6 +6,8 @@
 
 // Selected item text color on the control itself
 .choice-box > .label { -fx-text-fill: black;
--fx-font-size:xx-small;
+-fx-font-size:small;
+-fx-font-weight: bold;
+-fx-width: 1580px;
 
  }

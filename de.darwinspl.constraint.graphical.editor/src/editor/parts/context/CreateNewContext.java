@@ -1,8 +1,12 @@
 package editor.parts.context;
 
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.Date;
 
 import editor.parts.nodes.AbstractNodePart;
+import eu.hyvar.context.HyContextInformationFactory;
+import eu.hyvar.context.HyContextualInformation;
+import eu.hyvar.context.HyContextualInformationNumber;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,7 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
+import javafx.util.Callback;
 
 public class CreateNewContext extends AbstractNodePart<Button> {
 
@@ -38,7 +42,7 @@ public class CreateNewContext extends AbstractNodePart<Button> {
 		@Override
 		public void handle(ActionEvent event) {
 
-			Dialog<Pair<DatePicker, DatePicker>> dialog = new Dialog<>();
+			Dialog<HyContextualInformation> dialog = new Dialog<>();
 			dialog.setTitle("New Context");
 
 			VBox box = new VBox();
@@ -85,11 +89,17 @@ public class CreateNewContext extends AbstractNodePart<Button> {
 			AnchorPane.setLeftAnchor(gridN, 0d);
 			AnchorPane.setRightAnchor(gridN, 0d);
 			gridN.add(nameL, 0, 0);
-			gridN.add(new TextField(), 1, 0);
+			TextField name = new TextField();
+			gridN.add(name, 1, 0);
+			
 			gridN.add(minL, 0, 1);
-			gridN.add(new TextField(), 1, 1);
+			TextField min = new TextField();
+			gridN.add(min, 1, 1);
+			
+			
 			gridN.add(maxL, 0, 3);
-			gridN.add(new TextField(), 1, 3);
+			TextField max = new TextField();
+			gridN.add(max, 1, 3);
 			gridN.add(sinceLabel, 0, 4);
 			gridN.add(datePickerSince, 1, 4);
 
@@ -131,7 +141,7 @@ public class CreateNewContext extends AbstractNodePart<Button> {
 
 			box.getChildren().addAll(grid, gridN);
 
-			ButtonType buttontypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+			ButtonType buttontypeCancel = new ButtonType("Cancel", ButtonData.OK_DONE);
 			dialog.getDialogPane().getButtonTypes().add(buttontypeCancel);
 
 			dialog.getDialogPane().setContent(box);
@@ -142,26 +152,48 @@ public class CreateNewContext extends AbstractNodePart<Button> {
 			// }
 			// return null;
 			// });
+			
+			dialog.setResultConverter(new Callback<ButtonType, HyContextualInformation>() {
+				
+				@Override
+				public HyContextualInformation call(ButtonType param) {
+					if(param ==buttontypeSave){
+						HyContextualInformationNumber context = HyContextInformationFactory.eINSTANCE.createHyContextualInformationNumber();
+						if(name.getText() != null){
+							context.setName(name.getText());
+						
+							if(min.getText()!=null){
+								context.setMin(Integer.parseInt(min.getText()));
+								
+								if(max.getText()!=null){
+									context.setMax(Integer.parseInt(max.getText()));
+									
+									if(datePickerSince.getValue()!=null){
+										Date date = Date.from(datePickerSince.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+										context.setValidSince(date);
+									}
+									if(datePickerUntil.getValue()!=null){
+										Date date = Date.from(datePickerUntil.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+										context.setValidSince(date);
+									}
+									
+									return context;
+								}
+							}
+							
+						}
+					}
+					
+					return null;
+				}
+			});
+			
+			 dialog.showAndWait().ifPresent(result -> {
+				 
+//				
+			 });
+			
 
-			Optional<Pair<DatePicker, DatePicker>> result = dialog.showAndWait();
-			//
-			// result.ifPresent(dates -> {
-			//
-			// if (dates.getKey().getValue() != null) {
-			//
-			// Date sinceDate = Date.from(dates.getKey().getValue()
-			// .atStartOfDay(ZoneId.systemDefault()).toInstant());
-			// ((ControlBlockPart)
-			// targetBlock).getContent().setValidSince(sinceDate);
-			// }
-			// if (dates.getValue().getValue() != null) {
-			// Date untilDate = Date.from(dates.getValue().getValue()
-			// .atStartOfDay(ZoneId.systemDefault()).toInstant());
-			// ((ControlBlockPart)
-			// targetBlock).getContent().setValidUntil(untilDate);
-			// }
-			//
-			// });
 
 		}
 	};

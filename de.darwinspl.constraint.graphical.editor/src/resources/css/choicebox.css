@@ -5,7 +5,10 @@
 }
 
 // Selected item text color on the control itself
-.choice-box > .label { -fx-text-fill: white;
--fx-font-size:xx-small;
+.choice-box > .label { 
+-fx-text-fill: white;
+-fx-font-size:small;
+-fx-font-weight: bold;
+-fx-width: 180px;
 
  }
